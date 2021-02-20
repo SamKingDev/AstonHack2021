@@ -1,0 +1,100 @@
+{
+  "project_info": {
+    "project_number": "834353593895",
+    "project_id": "uniroomie-3cc55",
+    "storage_bucket": "uniroomie-3cc55.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:834353593895:android:14674c36e988b91c631802",
+        "android_client_info": {
+          "package_name": "samkingdev.astonhack.uniroomie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "834353593895-18krqlbcfgp8rq12h9eis6qr1m1nt7gb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "samkingdev.astonhack.uniroomie",
+            "certificate_hash": "0adeee4e0f45ebaf33168ec764cd4be9c6b49e47"
+          }
+        },
+        {
+          "client_id": "834353593895-g3n16l7hqklbpo78bh4qi47k3ij0rh2a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "samkingdev.astonhack.uniroomie",
+            "certificate_hash": "38b7bb94160d48aab93b85c0fd11ccd33180adde"
+          }
+        },
+        {
+          "client_id": "834353593895-i4fk0ke6eb6n4579ggor2psdqj0k9rog.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "samkingdev.astonhack.uniroomie",
+            "certificate_hash": "3c1ec9384635087fda54f5694dba15943070ea23"
+          }
+        },
+        {
+          "client_id": "834353593895-kngk36sbd2jtv4ukc44khmg0n5g1iglo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "samkingdev.astonhack.uniroomie",
+            "certificate_hash": "1170d36c19eb99f9c1d9631f3b08071ee3a2bfd9"
+          }
+        },
+        {
+          "client_id": "834353593895-ea8k2fgn8ji7ogu07jacslc873g5qs4c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDY6RwTm0Dhr7YMs_jLi6B8fwqhTyCqzJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "834353593895-ea8k2fgn8ji7ogu07jacslc873g5qs4c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:834353593895:android:b958ed41956fae34631802",
+        "android_client_info": {
+          "package_name": "tech.uniroomie.uni_roomie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "834353593895-ea8k2fgn8ji7ogu07jacslc873g5qs4c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDY6RwTm0Dhr7YMs_jLi6B8fwqhTyCqzJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "834353593895-ea8k2fgn8ji7ogu07jacslc873g5qs4c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
