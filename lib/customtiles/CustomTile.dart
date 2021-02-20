@@ -25,10 +25,8 @@ class _CustomDrawerTile extends State<CustomDrawerTile> {
       padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
       child: Container(
         decoration: BoxDecoration(
-            border: Border(
-                bottom: BorderSide(
-          color: new Color.fromRGBO(249, 89, 89, 1),
-        ))),
+            border: Border(bottom: BorderSide(
+              color: new Color.fromRGBO(249, 89, 89, 1),))),
         child: InkWell(
           splashColor: new Color.fromRGBO(249, 89, 89, 0.8),
           onTap: widget.onTap,
@@ -76,10 +74,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
         children: <Widget>[
           DrawerHeader(
             decoration: BoxDecoration(
-                gradient: LinearGradient(colors: <Color>[
-              new Color.fromRGBO(180, 190, 201, 1),
-              new Color.fromRGBO(69, 93, 122, 1)
-            ])),
+                gradient: LinearGradient(
+                    colors: <Color>[
+                      new Color.fromRGBO(180, 190, 201, 1),
+                      new Color.fromRGBO(69, 93, 122, 1)
+                    ])),
             child: Container(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -99,23 +98,28 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ),
             ),
           ),
-          CustomDrawerTile(Icons.person, 'Profile', () => {Navigator.push(
+          CustomDrawerTile(Icons.person, 'Profile', () =>
+          {Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => ProfilePage()),
           )}),
-          CustomDrawerTile(Icons.add, 'Create a Listing', () => {Navigator.push(
+          CustomDrawerTile(Icons.add, 'Create a Listing', () =>
+          {Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => createListingPage()),
           )}),
-          CustomDrawerTile(Icons.house, 'View Listings', () => {Navigator.push(
+          CustomDrawerTile(Icons.house, 'View Listings', () =>
+          {Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => viewListingPage()),
           )}),
-          CustomDrawerTile(Icons.list, 'Listing Requests', () => {Navigator.push(
+          CustomDrawerTile(Icons.list, 'Listing Requests', () =>
+          {Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => LoginPage()),
           )}),
-          CustomDrawerTile(Icons.logout, 'Logout', () => {widget.authBloc.logout()}),
+          CustomDrawerTile(
+              Icons.logout, 'Logout', () => {widget.authBloc.logout()}),
         ],
       ),
     );
@@ -137,7 +141,6 @@ class CustomProfileTile extends StatefulWidget {
 class _CustomProfileTile extends State<CustomProfileTile> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Padding(
       padding: const EdgeInsets.fromLTRB(30.0, 0, 30.0, 0),
       child: Container(
@@ -175,8 +178,10 @@ class EditProfileTile extends StatefulWidget {
   @override
   IconData icon;
   String text;
+  TextEditingController controller;
+  TextInputType inputType;
 
-  EditProfileTile(this.icon, this.text);
+  EditProfileTile(this.icon, this.text, this.controller, this.inputType);
 
   _EditProfileTileState createState() => _EditProfileTileState();
 }
@@ -216,6 +221,8 @@ class _EditProfileTileState extends State<EditProfileTile> {
                 fontSize: 20.0,
                 color: Colors.black,
               ),
+              controller: widget.controller,
+              keyboardType: widget.inputType,
               //controller:
             ),
           ),
@@ -225,28 +232,27 @@ class _EditProfileTileState extends State<EditProfileTile> {
   }
 }
 
-
 class EditProfileList extends StatefulWidget {
   @override
   IconData icon;
   String text;
-  List<String> genders = new List<String>();
-  List<String> universities = new List<String>();
-  List<String> courses = new List<String>();
+  String selectedValue;
+  Map<String, String> values = new Map<String, String>();
 
-
-  EditProfileList(this.icon, this.text);
+  EditProfileList(this.icon, this.text, this.values, this.selectedValue);
 
   _EditProfileListState createState() => _EditProfileListState();
 }
 
 class _EditProfileListState extends State<EditProfileList> {
-  String genderSelectedValue = 'Female';
-  String universitySelectedValue = 'Southampton Solent';
-  String coursesSelectedValue = 'Software Engineering';
 
   @override
   Widget build(BuildContext context) {
+    if (widget.values == null) return Container();
+    List<DropdownMenuItem<String>> items = new List<DropdownMenuItem<String>>();
+    widget.values.forEach((key, value) {
+      items.add(new DropdownMenuItem(value: key, child: Text(value)));
+    });
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -265,7 +271,7 @@ class _EditProfileListState extends State<EditProfileList> {
             ],
           ),
           DropdownButton<String>(
-            value: genderSelectedValue,
+            value: widget.selectedValue,
             icon: Icon(Icons.arrow_downward),
             iconSize: 24,
             elevation: 16,
@@ -273,14 +279,11 @@ class _EditProfileListState extends State<EditProfileList> {
             underline: Container(height: 2, color: Colors.black),
             onChanged: (String newValue) {
               setState(() {
-                genderSelectedValue = newValue;
+                widget.selectedValue = newValue;
+                print(widget.selectedValue);
               });
             },
-            items: <String>["Female", "Male"]
-                .map<DropdownMenuItem<String>>((e) {
-              return DropdownMenuItem<String>(
-                  value: e, child: Text(e));
-            }).toList(),
+            items: items,
           ),
         ],
       ),
