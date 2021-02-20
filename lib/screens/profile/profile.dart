@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_roomie/blocs/auth_bloc.dart';
@@ -216,13 +217,18 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: CustomProfileTile(
                     Icons.grade, 'Age', age == null ? "N/A" : age.toString()),
               ),
-              Container(
-                child: CustomProfileTile(Icons.school, 'University',
-                    universityName == null ? "N/A" : universityName),
+              FittedBox(
+                child: Container(
+                  child: CustomProfileTile(Icons.school, 'University',
+                      universityName == null ? "N/A" : universityName),
+                ),
               ),
-              Container(
-                child: CustomProfileTile(Icons.bookmark, 'Course',
-                    courseName == null ? "N/A" : courseName),
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Container(
+                  child: CustomProfileTile(Icons.bookmark, 'Course',
+                      courseName == null ? "N/A" : courseName),
+                ),
               ),
               Container(
                 child: CustomProfileTile(Icons.trending_up, 'Year Of Study',
