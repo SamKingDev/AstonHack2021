@@ -30,7 +30,8 @@ class AuthBloc {
         users.doc(result.user.uid)
             .set({
               'full_name': result.user.displayName, // John Doe
-              'email': result.user.email
+              'email': result.user.email,
+              'gender': "Other"
             })
             .then((value) => print("User Added"))
             .catchError((error) => print("Failed to add user: $error"));
