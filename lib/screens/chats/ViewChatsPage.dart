@@ -64,8 +64,13 @@ class _ViewChatsPageState extends State<ViewChatsPage> {
   _buildListItem(BuildContext context, QueryDocumentSnapshot data) {
     final chatRecord = ChatRecord.fromSnapshot(data);
 
+    User currentUser = FirebaseAuth.instance.currentUser;
+
+    DocumentReference userReference =
+        FirebaseFirestore.instance.collection("users").doc(currentUser.uid);
+
     return FutureBuilder(
-        future: getUserInfo(chatRecord.user2),
+        future: getUserInfo(userReference == chatRecord.user1 ? chatRecord.user2 : chatRecord.user1),
         builder: (context, AsyncSnapshot<DocumentSnapshot> userSnapshot) {
           if (!userSnapshot.hasData) {
             return LinearProgressIndicator();
