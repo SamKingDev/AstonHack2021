@@ -23,8 +23,11 @@ class createListingPage extends StatefulWidget {
 class _createListingPageState extends State<createListingPage> {
   StreamSubscription<User> loginStateSubscription;
 
+  bool _hasBeenPressed = false;
+
   @override
   void initState() {
+
     var authBloc = Provider.of<AuthBloc>(context, listen: false);
     loginStateSubscription = authBloc.currentUser.listen((fbUser) {
       if (fbUser == null) {
@@ -93,34 +96,58 @@ class _createListingPageState extends State<createListingPage> {
                       SizedBox(height: 50),
                       Container(
                         padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0)),
-                          onPressed: () async {
-                             result = await showLocationPicker(context, "AIzaSyDY6RwTm0Dhr7YMs_jLi6B8fwqhTyCqzJw");
-                          },
-                          color: new Color.fromRGBO(249, 89, 89, 1),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Find Location On Map',
-                                  style: TextStyle(fontSize: 20.0),
+                        child: Column(
+                          children: [
+                            RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0)),
+                              onPressed: () async {
+                                 result = await showLocationPicker(context, "AIzaSyDY6RwTm0Dhr7YMs_jLi6B8fwqhTyCqzJw");
+                                 if (result != null) {setState(() {
+                                   _hasBeenPressed = !_hasBeenPressed;
+                                 });
+                                 }
+                              },
+                              color: _hasBeenPressed ?  Colors.green : new Color.fromRGBO(249, 89, 89, 1),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text( _hasBeenPressed ?  'Edit Selected Location' : 'Find Location On Map',
+                                      style: TextStyle(fontSize: 20.0,
+                                      color: Colors.white),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Icon(
+                                      Icons.map,
+                                      color: Colors.white,
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(width: 10),
-                                Icon(
-                                  Icons.map,
-                                  color: Colors.black,
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                child: Visibility(
+                                  child: Text("Location Set",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),),
+                                  maintainSize: true,
+                                  maintainAnimation: true,
+                                  maintainState: true,
+                                  visible: _hasBeenPressed,
+                                ),
+
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       SizedBox(
-                        height: 50,
+                        height: 30,
                       ),
                       numberContainer('Price...', 'Price Per Week', priceCont),
                       SizedBox(
