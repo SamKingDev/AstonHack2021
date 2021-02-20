@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:uni_roomie/blocs/auth_bloc.dart';
 import 'package:uni_roomie/customtiles/CustomTile.dart';
 import 'package:uni_roomie/screens/login/login.dart';
+import 'package:uni_roomie/screens/profile/profile.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -24,6 +25,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
   DocumentReference course;
   String courseName;
   int yearOfStudy;
+  String profilePhoto;
+  String userId;
+  TextEditingController nameController = new TextEditingController();
+  TextEditingController ageController = new TextEditingController();
+  TextEditingController yearOfStudyController = new TextEditingController();
+  Map<String, String> universities = Map<String, String>();
+  Map<String, String> courses = Map<String, String>();
+  List<QueryDocumentSnapshot> courseDocumentSnapshot;
+  List<QueryDocumentSnapshot> universityDocumentSnapshots;
 
   @override
   void initState() {
@@ -38,24 +48,49 @@ class _EditProfilePageState extends State<EditProfilePage> {
       } else {
         DocumentReference documentReference =
             FirebaseFirestore.instance.collection('users').doc(fbUser.uid);
+        userId = fbUser.uid;
         documentReference.snapshots().listen((event) {
           setState(() {
             if (!mounted) return;
             fullName = event.data()["full_name"];
+            nameController.text = fullName;
             email = event.data()["email"];
             gender = event.data()["gender"];
             age = event.data()["age"];
+            ageController.text = age.toString();
             university = event.data()["university"];
             university.get().then((value) => setState(() {
-                  universityName = value.data()["name"];
+                  universityName = value.id;
                 }));
             course = event.data()["course"];
             course.get().then((value) => setState(() {
-                  courseName = value.data()["name"];
+                  courseName = value.id;
                 }));
             yearOfStudy = event.data()["yearOfStudy"];
+            yearOfStudyController.text = yearOfStudy.toString();
+            profilePhoto = event.data()["profilePhoto"];
           });
         });
+        FirebaseFirestore.instance
+            .collection('courses')
+            .orderBy("name")
+            .get()
+            .then((results) {
+                  courseDocumentSnapshot = results.docs;
+                  results.docs.forEach((element) {
+                    courses.putIfAbsent(element.id, () => element["name"]);
+                  });
+                });
+        FirebaseFirestore.instance
+            .collection('universities')
+            .orderBy("name")
+            .get()
+            .then((results) {
+                  universityDocumentSnapshots = results.docs;
+                  results.docs.forEach((element) {
+                    universities.putIfAbsent(element.id, () => element["name"]);
+                  });
+                });
       }
     });
     super.initState();
@@ -63,7 +98,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    Map<String, String> genders = {
+      "Female": "Female",
+      "Male": "Male",
+      "Other": "Other"
+    };
     var authBloc = Provider.of<AuthBloc>(context, listen: false);
+    EditProfileList universityProfile = EditProfileList(
+        Icons.school, 'University', universities, universityName);
+    EditProfileList courseProfile =
+        EditProfileList(Icons.school, 'Course', courses, courseName);
+    EditProfileList genderProfile = EditProfileList(Icons.person, 'Gender', genders, gender);
     return Scaffold(
       drawer: CustomDrawer(authBloc),
       appBar: AppBar(
@@ -84,7 +129,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
               child: Container(
                 child: Center(
                   child: CircleAvatar(
-                    backgroundImage: AssetImage('assets/avatar4.png'),
+                    backgroundImage: profilePhoto == null
+                        ? AssetImage('assets/avatar4.png')
+                        : NetworkImage(profilePhoto),
                     radius: 40.0,
                   ),
                 ),
@@ -108,24 +155,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
           child: Column(
             children: [
               Container(
-                child: EditProfileTile(Icons.account_box, 'Name'),
+                child: EditProfileTile(Icons.account_box, 'Name',
+                    nameController, TextInputType.text),
               ),
               Container(
-                child: EditProfileList(Icons.person, 'Gender'),
+                child: genderProfile,
               ),
               Container(
-                child: EditProfileTile(Icons.grade, 'Age'),
+                child: EditProfileTile(
+                    Icons.grade, 'Age', ageController, TextInputType.number),
               ),
               Container(
-                child: CustomProfileTile(Icons.school, 'University',
-                    universityName == null ? "N/A" : universityName),
+                child: universityProfile,
               ),
               Container(
-                child: CustomProfileTile(Icons.bookmark, 'Course',
-                    courseName == null ? "N/A" : courseName),
+                child: courseProfile,
               ),
               Container(
-                child: EditProfileTile(Icons.trending_up, 'Year Of Study'),
+                child: EditProfileTile(Icons.trending_up, 'Year Of Study',
+                    yearOfStudyController, TextInputType.number),
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
@@ -133,10 +181,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18.0)),
                   onPressed: () {
+                    FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(userId)
+                        .update({
+                      "age": int.parse(ageController.text),
+                      "course": courseDocumentSnapshot.firstWhere((element) => element.id == courseProfile.selectedValue).reference,
+                      "full_name": nameController.text,
+                      "gender": genderProfile.selectedValue,
+                      "university": universityDocumentSnapshots.firstWhere((element) => element.id == universityProfile.selectedValue).reference,
+                      "yearOfStudy": int.parse(yearOfStudyController.text)
+                    });
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => EditProfilePage()),
+                      MaterialPageRoute(builder: (context) => ProfilePage()),
                     );
                   },
                   color: new Color.fromRGBO(249, 89, 89, 1),
