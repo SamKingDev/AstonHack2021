@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_roomie/objects/listing.dart';
+import 'package:uni_roomie/screens/viewListings/singleListing.dart';
 
 import '../profile/profile.dart';
 
@@ -118,7 +119,7 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
             {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ProfilePage()),
+                MaterialPageRoute(builder: (context) => SingleListingPage()),
               );
             }
           },

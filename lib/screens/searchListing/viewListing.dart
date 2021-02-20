@@ -53,7 +53,7 @@ class _viewListingPageState extends State<viewListingPage> {
             padding: const EdgeInsets.all(40.0),
             child: Container(
               child: Text(
-                'Listings around $university',
+                'Listings Around You',
                 style: TextStyle(
                   fontSize: 30.0,
                   fontWeight: FontWeight.bold,
@@ -157,7 +157,7 @@ class _viewListingPageState extends State<viewListingPage> {
                 ]),
             child: Row(
               children: [
-                Text('Rooms Available:'),
+                Text('Max Rooms Available:'),
                 SizedBox(width: 20),
                 Flexible(
                   child: TextFormField(
@@ -198,7 +198,7 @@ class _viewListingPageState extends State<viewListingPage> {
                 ]),
             child: Row(
               children: [
-                Text('Total Rooms:'),
+                Text('Max Total Rooms:'),
                 SizedBox(width: 20),
                 Flexible(
                   child: TextFormField(
