@@ -219,12 +219,14 @@ class _createListingPageState extends State<createListingPage> {
                                   TaskSnapshot uploadTask = await FirebaseStorage
                                       .instance
                                       .ref(
-                                      'listing/${DateTime.now().toIso8601String()}.png')
+                                          'listing/${DateTime.now().toIso8601String()}.png')
                                       .putFile(f);
-                                  imageURLS.add(await uploadTask.ref.getDownloadURL());
+                                  imageURLS.add(
+                                      await uploadTask.ref.getDownloadURL());
                                 });
                                 return imageURLS;
                               }
+
                               void insertRow() async {
                                 Listing listing = new Listing(
                                     titleCont.text,
@@ -234,8 +236,8 @@ class _createListingPageState extends State<createListingPage> {
                                     int.parse(totalRoomsCont.text),
                                     int.parse(freeRoomsCont.text),
                                     Gender.values.firstWhere(
-                                            (element) =>
-                                        element.toString() ==
+                                        (element) =>
+                                            element.toString() ==
                                             "Gender." + genderSelectedValue,
                                         orElse: () => null),
                                     await uploadImages());
@@ -243,6 +245,7 @@ class _createListingPageState extends State<createListingPage> {
                                     .collection("listings")
                                     .add(listing.toFirebase());
                               }
+
                               insertRow();
                             },
                           ),
@@ -318,29 +321,35 @@ class _ImagesState extends State<Images> {
     imgs.add(
       Container(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-        child: Container(
-          child: Center(
-            child: IconButton(
-              icon: CircleAvatar(
-                backgroundImage: AssetImage('assets/empty_photo.png'),
-                radius: 30.0,
-              ),
-              onPressed: () => showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return alert;
-                },
-              ),
+          child: Container(
+            child: Column(
+              children: [
+                Text('Add Photo'),
+                Center(
+                    child: IconButton(
+                      icon: CircleAvatar(
+                        backgroundImage: AssetImage('assets/empty_photo.png'),
+                      ),
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return alert;
+                        },
+                      ),
+                    ),
+                ),
+              ],
             ),
           ),
         ),
-      ),
     );
     widget.images.forEach((img) {
       imgs.add(Container(
-        child: AspectRatio(
-            aspectRatio: 1 / 1, child: Image(image: AssetImage(img.path))),
-        height: 50,
+           child: Padding(
+             padding: const EdgeInsets.all(20.0),
+             child: Image(image: AssetImage(img.path)),
+           ),
+        height: 300,
       ));
     });
     return Column(children: imgs);
