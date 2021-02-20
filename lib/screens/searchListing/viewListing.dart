@@ -46,7 +46,7 @@ class _viewListingPageState extends State<viewListingPage> {
       body: SingleChildScrollView(
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(40.0),
             child: Container(
               child: Text(
                 'Listings around $university',
@@ -58,7 +58,7 @@ class _viewListingPageState extends State<viewListingPage> {
             ),
           ),
           Container(
-            margin: EdgeInsets.all(20),
+            margin: EdgeInsets.fromLTRB(30,10,30,10),
             padding: EdgeInsets.all(20),
             alignment: Alignment.center,
             decoration: BoxDecoration(
@@ -76,7 +76,7 @@ class _viewListingPageState extends State<viewListingPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Price Range'),
-                    Text('Min Value, Max Value'),
+                    Text('£${_priceRangeValues.start.round()} - £${_priceRangeValues.end.round()} '),
                   ],
                 ),
                 RangeSlider(
@@ -98,7 +98,7 @@ class _viewListingPageState extends State<viewListingPage> {
             ),
           ),
           Container(
-            margin: EdgeInsets.all(20),
+            margin: EdgeInsets.fromLTRB(30,10,30,10),
             padding: EdgeInsets.all(20),
             alignment: Alignment.center,
             decoration: BoxDecoration(
@@ -116,7 +116,7 @@ class _viewListingPageState extends State<viewListingPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Distance'),
-                    Text('Within ... Miles'),
+                    Text('Within ${_distanceRangeValues.end.round()} Miles'),
                   ],
                 ),
                 RangeSlider(
@@ -138,7 +138,7 @@ class _viewListingPageState extends State<viewListingPage> {
             ),
           ),
           Container(
-            margin: EdgeInsets.all(20),
+            margin: EdgeInsets.fromLTRB(30,10,30,10),
             padding: EdgeInsets.all(20),
             alignment: Alignment.center,
             decoration: BoxDecoration(
@@ -152,12 +152,33 @@ class _viewListingPageState extends State<viewListingPage> {
                 ]),
             child: Row(
               children: [
-                Text('Rooms Currently Available'),
+                Text('Rooms Available:'),
+                SizedBox(width: 20),
+                Flexible(
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    cursorColor: new Color.fromRGBO(249, 89, 89, 1),
+                    decoration: InputDecoration(
+                      hintStyle: TextStyle(color: Colors.grey[600]),
+                      enabledBorder: new UnderlineInputBorder(),
+                      focusedBorder: new UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: new Color.fromRGBO(249, 89, 89, 1),
+                        ),
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.black,
+                    ),
+                    //controller:
+                  ),
+                ),
               ],
             ),
           ),
           Container(
-            margin: EdgeInsets.all(20),
+            margin: EdgeInsets.fromLTRB(30,10,30,10),
             padding: EdgeInsets.all(20),
             alignment: Alignment.center,
             decoration: BoxDecoration(
@@ -171,8 +192,45 @@ class _viewListingPageState extends State<viewListingPage> {
                 ]),
             child: Row(
               children: [
-                Text('Total Rooms In House'),
+                Text('Total Rooms:'),
+                SizedBox(width: 20),
+                Flexible(
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    cursorColor: new Color.fromRGBO(249, 89, 89, 1),
+                    decoration: InputDecoration(
+                      hintStyle: TextStyle(color: Colors.grey[600]),
+                      enabledBorder: new UnderlineInputBorder(),
+                      focusedBorder: new UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: new Color.fromRGBO(249, 89, 89, 1),
+                        ),
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.black,
+                    ),
+                    //controller:
+                  ),
+                ),
               ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
+            child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0)),
+              onPressed: () {},
+              color: new Color.fromRGBO(249, 89, 89, 1),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Search For Rooms',
+                  style: TextStyle(fontSize: 20.0),
+                ),
+              ),
             ),
           ),
           Container(),
