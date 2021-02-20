@@ -169,13 +169,17 @@ class _viewOtherProfilePageState extends State<viewOtherProfilePage> {
                 child: CustomProfileTile(
                     Icons.grade, 'Age', age == null ? "N/A" : age.toString()),
               ),
-              Container(
-                child: CustomProfileTile(Icons.school, 'University',
-                    universityName == null ? "N/A" : universityName),
+              FittedBox(
+                child: Container(
+                  child: CustomProfileTile(Icons.school, 'University',
+                      universityName == null ? "N/A" : universityName),
+                ),
               ),
-              Container(
-                child: CustomProfileTile(Icons.bookmark, 'Course',
-                    courseName == null ? "N/A" : courseName),
+              FittedBox(
+                child: Container(
+                  child: CustomProfileTile(Icons.bookmark, 'Course',
+                      courseName == null ? "N/A" : courseName),
+                ),
               ),
               Container(
                 child: CustomProfileTile(Icons.trending_up, 'Year Of Study',

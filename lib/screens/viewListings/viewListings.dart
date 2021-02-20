@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni_roomie/screens/viewListings/singleListing.dart';
 
 class Tag extends StatefulWidget {
   String text;
@@ -59,6 +60,14 @@ class _Listing extends State<Listing> {
     return Padding(
         padding: const EdgeInsets.all(15.0),
         child: InkWell(
+          splashColor: new Color.fromRGBO(69, 93, 122, 1),
+          onTap: (){{
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SingleListingPage()),
+            );
+          }},
           child: Container(
             child: Padding(
               padding: const EdgeInsets.all(15.0),
@@ -135,7 +144,7 @@ class _viewListingsPageState extends State<viewListingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Search Results'), centerTitle: true),
+        appBar: AppBar(title: Text('Search Results'),backgroundColor: new Color.fromRGBO(69, 93, 122, 1), centerTitle: true),
         body: SingleChildScrollView(
           child: Listing(tmpImage, "Title", 5.0, 2, 2, "Male"),
         ));
