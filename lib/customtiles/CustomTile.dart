@@ -4,6 +4,7 @@ import 'package:uni_roomie/blocs/auth_bloc.dart';
 import 'package:uni_roomie/screens/createListing/createListing.dart';
 import 'package:uni_roomie/screens/login/login.dart';
 import 'package:uni_roomie/screens/profile/profile.dart';
+import 'package:uni_roomie/screens/profile/viewOtherProfile.dart';
 import 'package:uni_roomie/screens/searchListing/viewListing.dart';
 import 'package:uni_roomie/screens/viewListings/viewListings.dart';
 
@@ -117,7 +118,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           CustomDrawerTile(Icons.list, 'Listing Requests', () =>
           {Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
+            MaterialPageRoute(builder: (context) => viewOtherProfilePage()),
           )}),
           CustomDrawerTile(
               Icons.logout, 'Logout', () => {widget.authBloc.logout()}),

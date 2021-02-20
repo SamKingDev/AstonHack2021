@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:uni_roomie/screens/createListing/createListing.dart';
 import 'package:uni_roomie/screens/login/login.dart';
 import 'package:uni_roomie/screens/profile/profile.dart';
+import 'package:uni_roomie/screens/profile/viewOtherProfile.dart';
 import 'package:uni_roomie/screens/searchListing/viewListing.dart';
 import 'package:uni_roomie/screens/viewListings/viewListings.dart';
 
@@ -23,6 +24,7 @@ void main() async {
         '/profile': (context) => ProfilePage(),
         '/createListing': (context) => createListingPage(),
         '/viewListing': (context) => viewListingPage(),
+        '/viewOtherProfile': (context)=> viewOtherProfilePage(),
       },
     ),
   ));
