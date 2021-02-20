@@ -9,6 +9,8 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="uni_roomie"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDY6RwTm0Dhr7YMs_jLi6B8fwqhTyCqzJw"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
