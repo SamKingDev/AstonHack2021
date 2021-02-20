@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_roomie/blocs/auth_bloc.dart';
 import 'package:uni_roomie/customtiles/CustomTile.dart';
@@ -35,6 +38,7 @@ class _createListingPageState extends State<createListingPage> {
   }
 
   String genderSelectedValue = 'Female';
+  List<File> images = new List<File>();
 
   @override
   Widget build(BuildContext context) {
@@ -187,131 +191,7 @@ class _createListingPageState extends State<createListingPage> {
                       Container(
                           child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Column(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                child: Container(
-                                  child: Center(
-                                    child: CircleAvatar(
-                                      backgroundImage:
-                                          AssetImage('assets/empty_photo.png'),
-                                      radius: 30.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    child: TextButton(
-                                      onPressed: () => {},
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.add,
-                                            color: Colors.black,
-                                          ),
-                                          SizedBox(width: 10),
-                                          Text(
-                                            'Photo',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                child: Container(
-                                  child: Center(
-                                    child: CircleAvatar(
-                                      backgroundImage:
-                                          AssetImage('assets/empty_photo.png'),
-                                      radius: 30.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    child: TextButton(
-                                      onPressed: () => {},
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.add,
-                                            color: Colors.black,
-                                          ),
-                                          SizedBox(width: 10),
-                                          Text(
-                                            'Photo',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                child: Container(
-                                  child: Center(
-                                    child: CircleAvatar(
-                                      backgroundImage:
-                                          AssetImage('assets/empty_photo.png'),
-                                      radius: 30.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    child: TextButton(
-                                      onPressed: () => {},
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.add,
-                                            color: Colors.black,
-                                          ),
-                                          SizedBox(width: 10),
-                                          Text(
-                                            'Photo',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
+                        children: [Images(images)],
                       )),
                       SizedBox(
                         height: 50,
@@ -333,20 +213,37 @@ class _createListingPageState extends State<createListingPage> {
                               ),
                             ),
                             onPressed: () {
-                              Listing listing = new Listing(
-                                  titleCont.text,
-                                  new GeoPoint(double.parse(latCont.text),
-                                      double.parse(lonCont.text)),
-                                  double.parse(priceCont.text),
-                                  int.parse(totalRoomsCont.text),
-                                  int.parse(freeRoomsCont.text),
-                                  Gender.values.firstWhere(
-                                      (element) =>
-                                          element.toString() ==
-                                          "Gender." + genderSelectedValue,
-                                      orElse: () => null),
-                                  new List<String>());
-                              FirebaseFirestore.instance.collection("listings").add(listing.toFirebase());
+                              Future<List<String>> uploadImages() async {
+                                List<String> imageURLS = new List<String>();
+                                await Future.forEach(images, (f) async {
+                                  TaskSnapshot uploadTask = await FirebaseStorage
+                                      .instance
+                                      .ref(
+                                      'listing/${DateTime.now().toIso8601String()}.png')
+                                      .putFile(f);
+                                  imageURLS.add(await uploadTask.ref.getDownloadURL());
+                                });
+                                return imageURLS;
+                              }
+                              void insertRow() async {
+                                Listing listing = new Listing(
+                                    titleCont.text,
+                                    new GeoPoint(double.parse(latCont.text),
+                                        double.parse(lonCont.text)),
+                                    double.parse(priceCont.text),
+                                    int.parse(totalRoomsCont.text),
+                                    int.parse(freeRoomsCont.text),
+                                    Gender.values.firstWhere(
+                                            (element) =>
+                                        element.toString() ==
+                                            "Gender." + genderSelectedValue,
+                                        orElse: () => null),
+                                    await uploadImages());
+                                FirebaseFirestore.instance
+                                    .collection("listings")
+                                    .add(listing.toFirebase());
+                              }
+                              insertRow();
                             },
                           ),
                         ),
@@ -361,6 +258,92 @@ class _createListingPageState extends State<createListingPage> {
         ),
       ),
     );
+  }
+}
+
+class Images extends StatefulWidget {
+  List<File> images = new List<File>();
+
+  Images(this.images);
+
+  @override
+  _ImagesState createState() => _ImagesState();
+}
+
+class _ImagesState extends State<Images> {
+  @override
+  Widget build(BuildContext context) {
+    final picker = ImagePicker();
+    Future getImage(ImageSource source) async {
+      final pickedFile = await picker.getImage(source: source);
+
+      setState(() {
+        if (pickedFile != null) {
+          widget.images.add(File(pickedFile.path));
+        } else {
+          print('No image selected.');
+        }
+      });
+    }
+
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget cameraButton = FlatButton(
+      child: Text("Camera"),
+      onPressed: () {
+        Navigator.of(context).pop();
+        getImage(ImageSource.camera);
+      },
+    );
+    Widget galleryButton = FlatButton(
+      child: Text("Gallery"),
+      onPressed: () {
+        Navigator.of(context).pop();
+        getImage(ImageSource.gallery);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Photo Location"),
+      content: Text("Where do you want to select your new profile photo from?"),
+      actions: [cancelButton, galleryButton, cameraButton],
+    );
+    List<Widget> imgs = new List<Widget>();
+    imgs.add(
+      Container(
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+        child: Container(
+          child: Center(
+            child: IconButton(
+              icon: CircleAvatar(
+                backgroundImage: AssetImage('assets/empty_photo.png'),
+                radius: 30.0,
+              ),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return alert;
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    widget.images.forEach((img) {
+      imgs.add(Container(
+        child: AspectRatio(
+            aspectRatio: 1 / 1, child: Image(image: AssetImage(img.path))),
+        height: 50,
+      ));
+    });
+    return Column(children: imgs);
   }
 }
 
