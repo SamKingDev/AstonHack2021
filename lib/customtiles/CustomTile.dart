@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_roomie/blocs/auth_bloc.dart';
+import 'package:uni_roomie/screens/chats/ViewChatsPage.dart';
 import 'package:uni_roomie/screens/createListing/createListing.dart';
 import 'package:uni_roomie/screens/login/login.dart';
 import 'package:uni_roomie/screens/profile/profile.dart';
@@ -26,8 +27,10 @@ class _CustomDrawerTile extends State<CustomDrawerTile> {
       padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
       child: Container(
         decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(
-              color: new Color.fromRGBO(249, 89, 89, 1),))),
+            border: Border(
+                bottom: BorderSide(
+          color: new Color.fromRGBO(249, 89, 89, 1),
+        ))),
         child: InkWell(
           splashColor: new Color.fromRGBO(249, 89, 89, 0.8),
           onTap: widget.onTap,
@@ -75,11 +78,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
         children: <Widget>[
           DrawerHeader(
             decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: <Color>[
-                      new Color.fromRGBO(180, 190, 201, 1),
-                      new Color.fromRGBO(69, 93, 122, 1)
-                    ])),
+                gradient: LinearGradient(colors: <Color>[
+              new Color.fromRGBO(180, 190, 201, 1),
+              new Color.fromRGBO(69, 93, 122, 1)
+            ])),
             child: Container(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -99,26 +101,53 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ),
             ),
           ),
-          CustomDrawerTile(Icons.person, 'Profile', () =>
-          {Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ProfilePage()),
-          )}),
-          CustomDrawerTile(Icons.add, 'Create a Listing', () =>
-          {Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => createListingPage()),
-          )}),
-          CustomDrawerTile(Icons.house, 'View Listings', () =>
-          {Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => viewListingPage()),
-          )}),
-          CustomDrawerTile(Icons.list, 'Listing Requests', () =>
-          {Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
-          )}),
+          CustomDrawerTile(
+              Icons.person,
+              'Profile',
+              () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProfilePage()),
+                    )
+                  }),
+          CustomDrawerTile(
+              Icons.add,
+              'Create a Listing',
+              () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => createListingPage()),
+                    )
+                  }),
+          CustomDrawerTile(
+              Icons.house,
+              'View Listings',
+              () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => viewListingPage()),
+                    )
+                  }),
+          CustomDrawerTile(
+              Icons.list,
+              'Listing Requests',
+              () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    )
+                  }),
+          CustomDrawerTile(
+              Icons.message,
+              'Chats',
+              () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ViewChatsPage()),
+                    )
+                  }),
           CustomDrawerTile(
               Icons.logout, 'Logout', () => {widget.authBloc.logout()}),
         ],
@@ -126,7 +155,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
     );
   }
 }
-
 
 class CustomProfileTile extends StatefulWidget {
   IconData icon;
@@ -146,9 +174,7 @@ class _CustomProfileTile extends State<CustomProfileTile> {
       padding: const EdgeInsets.fromLTRB(30.0, 0, 30.0, 0),
       child: Container(
         decoration: BoxDecoration(
-            border: Border(
-                bottom:
-                BorderSide(color: Colors.grey[800]))),
+            border: Border(bottom: BorderSide(color: Colors.grey[800]))),
         child: Container(
           height: 50,
           child: Row(
@@ -246,7 +272,6 @@ class EditProfileList extends StatefulWidget {
 }
 
 class _EditProfileListState extends State<EditProfileList> {
-
   @override
   Widget build(BuildContext context) {
     if (widget.values == null) return Container();
