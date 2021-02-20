@@ -1,4 +1,11 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_roomie/blocs/auth_bloc.dart';
+import 'package:uni_roomie/customtiles/CustomTile.dart';
+import 'package:uni_roomie/screens/login/login.dart';
 
 //Divider - > Container(height: 100, child: Divider(color: Colors.black))
 
@@ -8,10 +15,29 @@ class createListingPage extends StatefulWidget {
 }
 
 class _createListingPageState extends State<createListingPage> {
+  StreamSubscription<User> loginStateSubscription;
+
+  @override
+  void initState() {
+    var authBloc = Provider.of<AuthBloc>(context, listen: false);
+    loginStateSubscription = authBloc.currentUser.listen((fbUser) {
+      if (fbUser == null) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => LoginPage(),
+          ),
+        );
+      }
+    });
+    super.initState();
+  }
+
   String genderSelectedValue = 'Female';
   @override
   Widget build(BuildContext context) {
+    var authBloc = Provider.of<AuthBloc>(context, listen: false);
     return Scaffold(
+      drawer: CustomDrawer(authBloc),
       appBar: AppBar(
           title: Text('Create Listing'),
           backgroundColor: new Color.fromRGBO(69, 93, 122, 1),
