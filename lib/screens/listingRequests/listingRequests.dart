@@ -1,55 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:uni_roomie/screens/viewListings/viewListings.dart';
 
-class Tag extends StatefulWidget {
-  String text;
-  Color color;
-
-  Tag(this.text, this.color);
-
-  @override
-  _Tag createState() => _Tag();
-}
-
-class _Tag extends State<Tag> {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-      child: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(7.0),
-          child:Container(
-            child: Text(widget.text),
-          ),
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: widget.color,
-        ),
-      ),
-    );
-  }
-}
-
-class Listing extends StatefulWidget {
+class Request extends StatefulWidget {
   String img;
-  String title;
-  double distance; //in miles
-  int rooms;
-  int price;
-  String genderPreference;
+  String name;
 
-  Listing(this.img, this.title, this.distance, this.rooms, this.price, this.genderPreference);
+  Request(this.img, this.name);
 
   @override
-  _Listing createState() => _Listing();
+  _Request createState() => _Request();
 }
 
-class _Listing extends State<Listing> {
-  String tmpImage =
-      "https://www.accommodationengine.co.uk/imagecache/750/450/storage/galleries/bC3fWJ/Student_Accommodation_Birmingham_Bentley_House_1.jpg";
-
-  //have access to widget.varname
+class _Request extends State<Request> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -69,7 +32,7 @@ class _Listing extends State<Listing> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                            image: NetworkImage(tmpImage), fit: BoxFit.fill),
+                            image: NetworkImage(widget.img), fit: BoxFit.fill),
                       ),
                     ),
                     SizedBox(
@@ -78,26 +41,30 @@ class _Listing extends State<Listing> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(widget.title),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Text("${widget.distance} Miles Away"),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Text("£${widget.price} Per Week"),
+                        Text(widget.name),
                         SizedBox(
                           height: 15,
                         ),
                         Row(
                           children: [
                             Tag("Male", Colors.red),
-                            Tag("2 Bedroom House", Colors.blue),
+                            Tag("Year 2", Colors.blue)
+
                           ],
+                        ),
+                        SizedBox(
+                          height: 15,
                         ),
                       ],
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text("View Profile")
+                      ],
+                    ),
+
                   ],
                 ),
               ),
@@ -112,29 +79,26 @@ class _Listing extends State<Listing> {
                   BoxShadow(
                       blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
                 ]),
-
           ),
         ));
   }
 }
 
-class viewListingsPage extends StatefulWidget {
+class listingRequests extends StatefulWidget {
   @override
-  _viewListingsPageState createState() => _viewListingsPageState();
+  _listingRequestsState createState() => _listingRequestsState();
 }
 
-class _viewListingsPageState extends State<viewListingsPage> {
-  //have access to widget.varname
+class _listingRequestsState extends State<listingRequests> {
   String tmpImage =
       "https://www.accommodationengine.co.uk/imagecache/750/450/storage/galleries/bC3fWJ/Student_Accommodation_Birmingham_Bentley_House_1.jpg";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Search Results'), centerTitle: true),
+        appBar: AppBar(title: Text('View Requests'), centerTitle: true),
         body: SingleChildScrollView(
-          child: Listing(tmpImage, "Title", 5.0, 2, 2, "Male"),
+          child: Request(tmpImage, "Bob"),
         ));
   }
 }
-
