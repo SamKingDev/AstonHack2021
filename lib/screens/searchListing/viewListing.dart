@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:uni_roomie/blocs/auth_bloc.dart';
 import 'package:uni_roomie/customtiles/CustomTile.dart';
 import 'package:uni_roomie/screens/login/login.dart';
+import 'package:uni_roomie/screens/viewListings/viewListings.dart';
 
 class viewListingPage extends StatefulWidget {
   @override
@@ -222,7 +223,10 @@ class _viewListingPageState extends State<viewListingPage> {
             child: RaisedButton(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0)),
-              onPressed: () {},
+              onPressed: () {Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => viewListingsPage()),
+              );},
               color: new Color.fromRGBO(249, 89, 89, 1),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
