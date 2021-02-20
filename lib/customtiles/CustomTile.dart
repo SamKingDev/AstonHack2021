@@ -87,7 +87,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     elevation: 20,
                     child: Padding(
                       padding: EdgeInsets.all(5.0),
-                      child: Image.asset('assets/logo.png',
+                      child: Image.asset(
+                        'assets/logo.png',
                         height: 100,
                         width: 100,
                       ),
