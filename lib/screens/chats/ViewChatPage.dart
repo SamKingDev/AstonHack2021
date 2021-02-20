@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:uni_roomie/screens/profile/viewOtherProfile.dart';
 
 import 'ChatRecord.dart';
 import 'MessageRecord.dart';
@@ -64,11 +65,17 @@ class _ViewChatPageState extends State<ViewChatPage> {
               SizedBox(
                 width: 2,
               ),
-              CircleAvatar(
-                backgroundImage: otherUser.profilePicture == null
-                    ? AssetImage("assets/avatar4.png")
-                    : NetworkImage(otherUser.profilePicture),
-                maxRadius: 20,
+              IconButton(
+                icon: CircleAvatar(
+                  backgroundImage: otherUser.profilePicture == null
+                      ? AssetImage("assets/avatar4.png")
+                      : NetworkImage(otherUser.profilePicture),
+                  maxRadius: 20,
+                ),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => viewOtherProfilePage(otherUser.reference.id)),
+                ),
               ),
               SizedBox(
                 width: 12,
