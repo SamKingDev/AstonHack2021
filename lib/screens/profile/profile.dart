@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,15 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   StreamSubscription<User> loginStateSubscription;
+  String fullName;
+  String email;
+  String gender;
+  int age;
+  DocumentReference university;
+  String universityName;
+  DocumentReference course;
+  String courseName;
+  int yearOfStudy;
 
   @override
   void initState() {
@@ -25,6 +35,23 @@ class _ProfilePageState extends State<ProfilePage> {
             builder: (context) => LoginPage(),
           ),
         );
+      } else {
+        DocumentReference documentReference =
+        FirebaseFirestore.instance.collection('users').doc(fbUser.uid);
+        documentReference.snapshots().listen((event) {
+          setState(() {
+            if (!mounted) return;
+            fullName = event.data()["full_name"];
+            email = event.data()["email"];
+            gender = event.data()["gender"];
+            age = event.data()["age"];
+            university = event.data()["university"];
+            university.get().then((value) => setState(() {universityName = value.data()["name"];}));
+            course = event.data()["course"];
+            course.get().then((value) => setState(() {courseName = value.data()["name"];}));
+            yearOfStudy = event.data()["yearOfStudy"];
+          });
+        });
       }
     });
     super.initState();
@@ -98,28 +125,28 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             children: [
               Container(
-                child: CustomProfileTile(Icons.account_box, 'Name', 'Emma Sutton'),
+                child: CustomProfileTile(Icons.account_box, 'Name', fullName == null ? "N/A" : fullName),
               ),
               Container(
                 child: CustomProfileTile(
-                    Icons.alternate_email, 'Email', 'Test@gmail.com'),
+                    Icons.alternate_email, 'Email', email == null ? "N/A" : email),
               ),
               Container(
-                child: CustomProfileTile(Icons.person, 'Gender', 'Female'),
+                child: CustomProfileTile(Icons.person, 'Gender', gender == null ? "N/A" : gender),
               ),
               Container(
-                child: CustomProfileTile(Icons.grade, 'Age', '21'),
-              ),
-              Container(
-                child: CustomProfileTile(
-                    Icons.school, 'University', 'Southampton Solent'),
+                child: CustomProfileTile(Icons.grade, 'Age', age == null ? "N/A" : age.toString()),
               ),
               Container(
                 child: CustomProfileTile(
-                    Icons.bookmark, 'Course', 'Software Engineering'),
+                    Icons.school, 'University', universityName == null ? "N/A" : universityName),
               ),
               Container(
-                child: CustomProfileTile(Icons.trending_up, 'Year Of Study', '3'),
+                child: CustomProfileTile(
+                    Icons.bookmark, 'Course', courseName == null ? "N/A" : courseName),
+              ),
+              Container(
+                child: CustomProfileTile(Icons.trending_up, 'Year Of Study', yearOfStudy == null ? "N/A" : yearOfStudy.toString()),
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
