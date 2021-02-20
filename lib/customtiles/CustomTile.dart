@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_roomie/blocs/auth_bloc.dart';
+import 'package:uni_roomie/screens/createListing/createListing.dart';
+import 'package:uni_roomie/screens/login/login.dart';
+import 'package:uni_roomie/screens/profile/profile.dart';
+import 'package:uni_roomie/screens/searchListing/viewListing.dart';
 
 class CustomDrawerTile extends StatefulWidget {
   IconData icon;
@@ -89,13 +93,75 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ),
             ),
           ),
-          CustomDrawerTile(Icons.person, 'Profile', () => {}),
-          CustomDrawerTile(Icons.directions, 'Create a Listing', () => {}),
-          CustomDrawerTile(Icons.star, 'View Listings', () => {}),
-          CustomDrawerTile(Icons.list, 'Listing Requests', () => {}),
+          CustomDrawerTile(Icons.person, 'Profile', () => {Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProfilePage()),
+          )}),
+          CustomDrawerTile(Icons.add, 'Create a Listing', () => {Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => createListingPage()),
+          )}),
+          CustomDrawerTile(Icons.house, 'View Listings', () => {Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => viewListingPage()),
+          )}),
+          CustomDrawerTile(Icons.list, 'Listing Requests', () => {Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LoginPage()),
+          )}),
           CustomDrawerTile(Icons.logout, 'Logout', () => {widget.authBloc.logout()}),
         ],
       ),
     );
   }
 }
+
+
+class CustomProfileTile extends StatefulWidget {
+  IconData icon;
+  String text;
+  String content;
+
+  CustomProfileTile(this.icon, this.text, this.content);
+
+  @override
+  _CustomProfileTile createState() => _CustomProfileTile();
+}
+
+class _CustomProfileTile extends State<CustomProfileTile> {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(30.0, 0, 30.0, 0),
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border(
+                bottom:
+                BorderSide(color: new Color.fromRGBO(249, 89, 89, 1)))),
+        child: Container(
+          height: 50,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween, //x axis
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Icon(widget.icon),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      widget.text,
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                  ),
+                ],
+              ),
+              Text(widget.content),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
