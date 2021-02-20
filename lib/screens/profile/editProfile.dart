@@ -165,11 +165,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 child: EditProfileTile(
                     Icons.grade, 'Age', ageController, TextInputType.number),
               ),
-              Container(
-                child: universityProfile,
+              FittedBox(
+                child: Container(
+                  child: universityProfile,
+                ),
               ),
-              Container(
-                child: courseProfile,
+              FittedBox(
+                child: Container(
+                  child: courseProfile,
+                ),
               ),
               Container(
                 child: EditProfileTile(Icons.trending_up, 'Year Of Study',
