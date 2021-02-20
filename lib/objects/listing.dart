@@ -7,7 +7,7 @@ class Listing {
   int totalRooms;
   int freeRooms;
   Gender genderPreference;
-  List<String> photoURLs;
+  List<dynamic> photoURLs;
   DocumentReference reference;
 
   Listing(this.title, this.geoPoint, this.pricePerWeek, this.totalRooms,
@@ -16,7 +16,7 @@ class Listing {
   Listing.fromMap(Map<String, dynamic> map, {this.reference}){
     this.title = map["title"];
     this.geoPoint = map["geoPoint"];
-    this.pricePerWeek = map["pricePerWeek"];
+    this.pricePerWeek = double.parse(map["pricePerWeek"].toString());
     this.totalRooms = map["totalRooms"];
     this.freeRooms = map["freeRooms"];
     this.genderPreference = Gender.values.firstWhere((e) => e.toString() == map["genderPreference"]);

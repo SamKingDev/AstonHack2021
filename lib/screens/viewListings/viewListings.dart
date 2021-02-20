@@ -1,4 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:uni_roomie/objects/listing.dart';
+
+import '../profile/profile.dart';
 
 class Tag extends StatefulWidget {
   String text;
@@ -18,7 +22,7 @@ class _Tag extends State<Tag> {
       child: Container(
         child: Padding(
           padding: const EdgeInsets.all(7.0),
-          child:Container(
+          child: Container(
             child: Text(widget.text),
           ),
         ),
@@ -31,37 +35,96 @@ class _Tag extends State<Tag> {
   }
 }
 
-class Listing extends StatefulWidget {
-  // IconData icon;
-  // String text;
-  // Function onTap;
+class ViewListingsPage extends StatefulWidget {
+  final int minPrice;
+  final int maxPrice;
+  final int minDistance;
+  final int maxDistance;
+  final int roomsAvailable;
+  final int totalRooms;
 
-  String img;
-  String title;
-  double distance; //in miles
-  int rooms;
-  int price;
-  String genderPreference;
-
-  Listing(this.img, this.title, this.distance, this.rooms, this.price, this.genderPreference);
+  ViewListingsPage(
+      {Key key,
+      this.minPrice,
+      this.maxPrice,
+      this.minDistance,
+      this.maxDistance,
+      this.roomsAvailable,
+      this.totalRooms})
+      : super(key: key);
 
   @override
-  _Listing createState() => _Listing();
+  _ViewListingsPageState createState() => _ViewListingsPageState(
+      minPrice, maxPrice, minDistance, maxDistance, roomsAvailable, totalRooms);
 }
 
-class _Listing extends State<Listing> {
-  String tmpImage =
-      "https://www.accommodationengine.co.uk/imagecache/750/450/storage/galleries/bC3fWJ/Student_Accommodation_Birmingham_Bentley_House_1.jpg";
+class _ViewListingsPageState extends State<ViewListingsPage> {
+  final int minPrice;
+  final int maxPrice;
+  final int minDistance;
+  final int maxDistance;
+  final int roomsAvailable;
+  final int totalRooms;
 
-  //have access to widget.varname
+  _ViewListingsPageState(this.minPrice, this.maxPrice, this.minDistance,
+      this.maxDistance, this.roomsAvailable, this.totalRooms);
+
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Search Results'),
+        centerTitle: true,
+      ),
+      body: _buildBody(context),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection("listings")
+          .where("pricePerWeek", isGreaterThanOrEqualTo: minPrice)
+          .where("pricePerWeek", isLessThanOrEqualTo: maxPrice)
+          .where("freeRooms", isEqualTo: roomsAvailable)
+          .where("totalRooms", isEqualTo: totalRooms)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return LinearProgressIndicator();
+
+        return _buildList(context, snapshot.data.docs);
+      },
+    );
+  }
+
+  Widget _buildList(
+      BuildContext context, List<QueryDocumentSnapshot> documents) {
+    return ListView(
+      padding: const EdgeInsets.only(top: 20.0),
+      children: documents
+          .map<Widget>((data) => _buildListItem(context, data))
+          .toList(),
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, QueryDocumentSnapshot data) {
+    final listingRecord = Listing.fromSnapshot(data);
+
     return Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(5.0),
         child: InkWell(
+          splashColor: new Color.fromRGBO(69, 93, 122, 1),
+          onTap: () {
+            {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfilePage()),
+              );
+            }
+          },
           child: Container(
             child: Padding(
-              padding: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(5.0),
               child: Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -73,7 +136,9 @@ class _Listing extends State<Listing> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                            image: NetworkImage(tmpImage), fit: BoxFit.fill),
+                            image: NetworkImage(
+                                "https://www.accommodationengine.co.uk/imagecache/750/450/storage/galleries/bC3fWJ/Student_Accommodation_Birmingham_Bentley_House_1.jpg"),
+                            fit: BoxFit.fill),
                       ),
                     ),
                     SizedBox(
@@ -82,22 +147,25 @@ class _Listing extends State<Listing> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(widget.title),
+                        Text(listingRecord.title),
                         SizedBox(
                           height: 8,
                         ),
-                        Text("${widget.distance} Miles Away"),
+                        Text("0 Miles Away"),
                         SizedBox(
                           height: 8,
                         ),
-                        Text("£${widget.price} Per Week"),
+                        Text("£${listingRecord.pricePerWeek} Per Week"),
                         SizedBox(
                           height: 15,
                         ),
                         Row(
                           children: [
                             Tag("Male", Colors.red),
-                            Tag("2 Bedroom House", Colors.blue),
+                            Tag("${listingRecord.totalRooms} Bedroom House",
+                                Colors.blue),
+                            Tag("${listingRecord.freeRooms} Free Rooms",
+                                Colors.blue),
                           ],
                         ),
                       ],
@@ -107,38 +175,7 @@ class _Listing extends State<Listing> {
               ),
             ),
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-                color: new Color.fromRGBO(180, 190, 201, 1),
-                // set border width
-                borderRadius: BorderRadius.circular(10),
-                // set rounded corner radius
-                boxShadow: [
-                  BoxShadow(
-                      blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
-                ]),
-
           ),
         ));
   }
 }
-
-class viewListingsPage extends StatefulWidget {
-  @override
-  _viewListingsPageState createState() => _viewListingsPageState();
-}
-
-class _viewListingsPageState extends State<viewListingsPage> {
-  //have access to widget.varname
-  String tmpImage =
-      "https://www.accommodationengine.co.uk/imagecache/750/450/storage/galleries/bC3fWJ/Student_Accommodation_Birmingham_Bentley_House_1.jpg";
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text('Search Results'), centerTitle: true),
-        body: SingleChildScrollView(
-          child: Listing(tmpImage, "Title", 5.0, 2, 2, "Male"),
-        ));
-  }
-}
-
