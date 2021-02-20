@@ -138,7 +138,7 @@ class _CustomProfileTile extends State<CustomProfileTile> {
         decoration: BoxDecoration(
             border: Border(
                 bottom:
-                BorderSide(color: new Color.fromRGBO(249, 89, 89, 1)))),
+                BorderSide(color: Colors.grey[800]))),
         child: Container(
           height: 50,
           child: Row(
@@ -160,6 +160,123 @@ class _CustomProfileTile extends State<CustomProfileTile> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class EditProfileTile extends StatefulWidget {
+  @override
+  IconData icon;
+  String text;
+
+  EditProfileTile(this.icon, this.text);
+
+  _EditProfileTileState createState() => _EditProfileTileState();
+}
+
+class _EditProfileTileState extends State<EditProfileTile> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Row(
+            children: <Widget>[
+              Icon(widget.icon),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  widget.text,
+                  style: TextStyle(fontSize: 20.0),
+                ),
+              ),
+            ],
+          ),
+          new Flexible(
+            child: TextFormField(
+              cursorColor: new Color.fromRGBO(249, 89, 89, 1),
+              decoration: InputDecoration(
+                hintStyle: TextStyle(color: Colors.grey[600]),
+                enabledBorder: new UnderlineInputBorder(),
+                focusedBorder: new UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: new Color.fromRGBO(249, 89, 89, 1),
+                  ),
+                ),
+              ),
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.black,
+              ),
+              //controller:
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class EditProfileList extends StatefulWidget {
+  @override
+  IconData icon;
+  String text;
+  List<String> genders = new List<String>();
+  List<String> universities = new List<String>();
+  List<String> courses = new List<String>();
+
+
+  EditProfileList(this.icon, this.text);
+
+  _EditProfileListState createState() => _EditProfileListState();
+}
+
+class _EditProfileListState extends State<EditProfileList> {
+  String genderSelectedValue = 'Female';
+  String universitySelectedValue = 'Southampton Solent';
+  String coursesSelectedValue = 'Software Engineering';
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: <Widget>[
+              Icon(widget.icon),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  widget.text,
+                  style: TextStyle(fontSize: 20.0),
+                ),
+              ),
+            ],
+          ),
+          DropdownButton<String>(
+            value: genderSelectedValue,
+            icon: Icon(Icons.arrow_downward),
+            iconSize: 24,
+            elevation: 16,
+            style: TextStyle(color: Colors.black),
+            underline: Container(height: 2, color: Colors.black),
+            onChanged: (String newValue) {
+              setState(() {
+                genderSelectedValue = newValue;
+              });
+            },
+            items: <String>["Female", "Male"]
+                .map<DropdownMenuItem<String>>((e) {
+              return DropdownMenuItem<String>(
+                  value: e, child: Text(e));
+            }).toList(),
+          ),
+        ],
       ),
     );
   }

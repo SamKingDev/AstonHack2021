@@ -7,14 +7,13 @@ import 'package:provider/provider.dart';
 import 'package:uni_roomie/blocs/auth_bloc.dart';
 import 'package:uni_roomie/customtiles/CustomTile.dart';
 import 'package:uni_roomie/screens/login/login.dart';
-import 'package:uni_roomie/screens/profile/editProfile.dart';
 
-class ProfilePage extends StatefulWidget {
+class EditProfilePage extends StatefulWidget {
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _EditProfilePageState createState() => _EditProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _EditProfilePageState extends State<EditProfilePage> {
   StreamSubscription<User> loginStateSubscription;
   String fullName;
   String email;
@@ -38,7 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
         );
       } else {
         DocumentReference documentReference =
-        FirebaseFirestore.instance.collection('users').doc(fbUser.uid);
+            FirebaseFirestore.instance.collection('users').doc(fbUser.uid);
         documentReference.snapshots().listen((event) {
           setState(() {
             if (!mounted) return;
@@ -47,9 +46,13 @@ class _ProfilePageState extends State<ProfilePage> {
             gender = event.data()["gender"];
             age = event.data()["age"];
             university = event.data()["university"];
-            university.get().then((value) => setState(() {universityName = value.data()["name"];}));
+            university.get().then((value) => setState(() {
+                  universityName = value.data()["name"];
+                }));
             course = event.data()["course"];
-            course.get().then((value) => setState(() {courseName = value.data()["name"];}));
+            course.get().then((value) => setState(() {
+                  courseName = value.data()["name"];
+                }));
             yearOfStudy = event.data()["yearOfStudy"];
           });
         });
@@ -64,7 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       drawer: CustomDrawer(authBloc),
       appBar: AppBar(
-        title: Text('Your Profile'),
+        title: Text('Edit Profile'),
         centerTitle: true,
         backgroundColor: new Color.fromRGBO(69, 93, 122, 1),
       ),
@@ -87,31 +90,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  child: TextButton(
-                    onPressed: () {},
-                    child: Row(
-                      children: [
-                        Text(
-                          'Change Avatar',
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                        SizedBox(width: 10),
-                        Icon(
-                          Icons.camera_alt,
-                          color: Colors.black,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
         Container(
@@ -119,45 +97,48 @@ class _ProfilePageState extends State<ProfilePage> {
           padding: EdgeInsets.all(20),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-              color: new Color.fromRGBO(180, 190, 201, 1),// set border width
-              borderRadius: BorderRadius.all(
-                  Radius.circular(10.0)), // set rounded corner radius
-              boxShadow: [BoxShadow(blurRadius: 10,color: Colors.black,offset: Offset(1,3))]),
+              color: new Color.fromRGBO(180, 190, 201, 1),
+              // set border width
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              // set rounded corner radius
+              boxShadow: [
+                BoxShadow(
+                    blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
+              ]),
           child: Column(
             children: [
               Container(
-                child: CustomProfileTile(Icons.account_box, 'Name', fullName == null ? "N/A" : fullName),
+                child: EditProfileTile(Icons.account_box, 'Name'),
               ),
               Container(
-                child: CustomProfileTile(
-                    Icons.alternate_email, 'Email', email == null ? "N/A" : email),
+                child: EditProfileList(Icons.person, 'Gender'),
               ),
               Container(
-                child: CustomProfileTile(Icons.person, 'Gender', gender == null ? "N/A" : gender),
+                child: EditProfileTile(Icons.grade, 'Age'),
               ),
               Container(
-                child: CustomProfileTile(Icons.grade, 'Age', age == null ? "N/A" : age.toString()),
+                child: CustomProfileTile(Icons.school, 'University',
+                    universityName == null ? "N/A" : universityName),
               ),
               Container(
-                child: CustomProfileTile(
-                    Icons.school, 'University', universityName == null ? "N/A" : universityName),
+                child: CustomProfileTile(Icons.bookmark, 'Course',
+                    courseName == null ? "N/A" : courseName),
               ),
               Container(
-                child: CustomProfileTile(
-                    Icons.bookmark, 'Course', courseName == null ? "N/A" : courseName),
-              ),
-              Container(
-                child: CustomProfileTile(Icons.trending_up, 'Year Of Study', yearOfStudy == null ? "N/A" : yearOfStudy.toString()),
+                child: EditProfileTile(Icons.trending_up, 'Year Of Study'),
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
                 child: RaisedButton(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18.0)),
-                  onPressed: () {Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => EditProfilePage()),
-                  );},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditProfilePage()),
+                    );
+                  },
                   color: new Color.fromRGBO(249, 89, 89, 1),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -165,12 +146,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Edit Profile',
+                          'Save Changes',
                           style: TextStyle(fontSize: 20.0),
                         ),
                         SizedBox(width: 10),
                         Icon(
-                          Icons.edit,
+                          Icons.save_alt,
                           color: Colors.black,
                         ),
                       ],
