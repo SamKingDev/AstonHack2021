@@ -56,15 +56,16 @@ class _ProfilePageState extends State<ProfilePage> {
             gender = event.data()["gender"];
             age = event.data()["age"];
             university = event.data()["university"];
-            university.get().then((value) => setState(() {
+            if (university != null ) university.get().then((value) => setState(() {
                   universityName = value.data()["name"];
                 }));
             course = event.data()["course"];
-            course.get().then((value) => setState(() {
+            if (course != null ) course.get().then((value) => setState(() {
                   courseName = value.data()["name"];
                 }));
             yearOfStudy = event.data()["yearOfStudy"];
             profilePhoto = event.data()["profilePhoto"];
+            print(profilePhoto);
           });
         });
       }
