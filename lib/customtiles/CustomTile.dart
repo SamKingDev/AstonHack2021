@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_roomie/blocs/auth_bloc.dart';
 import 'package:uni_roomie/screens/createListing/createListing.dart';
+import 'package:uni_roomie/screens/viewListings/viewListings.dart';
 
 class CustomDrawerTile extends StatefulWidget {
   IconData icon;
@@ -107,7 +108,17 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           builder: (context) => createListingPage()),
                     )
                   }),
-          CustomDrawerTile(Icons.star, 'View Listings', () => {}),
+          CustomDrawerTile(Icons.list, 'Search Listings', () => {}),
+          CustomDrawerTile(
+              Icons.directions,
+              'View Listings',
+              () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => viewListingsPage()),
+                    )
+                  }),
           CustomDrawerTile(Icons.list, 'Listing Requests', () => {}),
           CustomDrawerTile(
               Icons.logout, 'Logout', () => {widget.authBloc.logout()}),
