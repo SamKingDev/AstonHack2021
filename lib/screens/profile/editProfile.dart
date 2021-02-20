@@ -1,23 +1,19 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_roomie/blocs/auth_bloc.dart';
 import 'package:uni_roomie/customtiles/CustomTile.dart';
 import 'package:uni_roomie/screens/login/login.dart';
-import 'package:uni_roomie/screens/profile/editProfile.dart';
 
-class ProfilePage extends StatefulWidget {
+class EditProfilePage extends StatefulWidget {
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _EditProfilePageState createState() => _EditProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _EditProfilePageState extends State<EditProfilePage> {
   StreamSubscription<User> loginStateSubscription;
   String fullName;
   String email;
@@ -28,11 +24,6 @@ class _ProfilePageState extends State<ProfilePage> {
   DocumentReference course;
   String courseName;
   int yearOfStudy;
-  String userId;
-  String profilePhoto;
-
-  File _image;
-  final picker = ImagePicker();
 
   @override
   void initState() {
@@ -45,7 +36,6 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         );
       } else {
-        userId = fbUser.uid;
         DocumentReference documentReference =
             FirebaseFirestore.instance.collection('users').doc(fbUser.uid);
         documentReference.snapshots().listen((event) {
@@ -64,7 +54,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   courseName = value.data()["name"];
                 }));
             yearOfStudy = event.data()["yearOfStudy"];
-            profilePhoto = event.data()["profilePhoto"];
           });
         });
       }
@@ -72,62 +61,13 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
   }
 
-  Future getImage(ImageSource source) async {
-    final pickedFile = await picker.getImage(source: source);
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-        UploadTask uploadTask =
-            FirebaseStorage.instance.ref('profilePhotos/$userId.png').putFile(_image);
-        uploadTask.then((snapshot) => {
-              snapshot.ref
-                  .getDownloadURL()
-                  .then((value) => {
-                    FirebaseFirestore.instance.collection("users").doc(userId).update({"profilePhoto": value})
-              })
-            });
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     var authBloc = Provider.of<AuthBloc>(context, listen: false);
-    // set up the buttons
-    Widget cancelButton = FlatButton(
-      child: Text("Cancel"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-    Widget cameraButton = FlatButton(
-      child: Text("Camera"),
-      onPressed: () {
-        Navigator.of(context).pop();
-        getImage(ImageSource.camera);
-      },
-    );
-    Widget galleryButton = FlatButton(
-      child: Text("Gallery"),
-      onPressed: () {
-        Navigator.of(context).pop();
-        getImage(ImageSource.gallery);
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Photo Location"),
-      content: Text("Where do you want to select your new profile photo from?"),
-      actions: [cancelButton, galleryButton, cameraButton],
-    );
     return Scaffold(
       drawer: CustomDrawer(authBloc),
       appBar: AppBar(
-        title: Text('Your Profile'),
+        title: Text('Edit Profile'),
         centerTitle: true,
         backgroundColor: new Color.fromRGBO(69, 93, 122, 1),
       ),
@@ -144,43 +84,11 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Container(
                 child: Center(
                   child: CircleAvatar(
-                    backgroundImage: profilePhoto == null
-                        ? AssetImage('assets/avatar4.png')
-                        : NetworkImage(profilePhoto),
+                    backgroundImage: AssetImage('assets/avatar4.png'),
                     radius: 40.0,
                   ),
                 ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  child: TextButton(
-                    onPressed: () => showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return alert;
-                      },
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Change Avatar',
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                        SizedBox(width: 10),
-                        Icon(
-                          Icons.camera_alt,
-                          color: Colors.black,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
             ),
           ],
         ),
@@ -200,20 +108,13 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             children: [
               Container(
-                child: CustomProfileTile(Icons.account_box, 'Name',
-                    fullName == null ? "N/A" : fullName),
+                child: EditProfileTile(Icons.account_box, 'Name'),
               ),
               Container(
-                child: CustomProfileTile(Icons.alternate_email, 'Email',
-                    email == null ? "N/A" : email),
+                child: EditProfileList(Icons.person, 'Gender'),
               ),
               Container(
-                child: CustomProfileTile(
-                    Icons.person, 'Gender', gender == null ? "N/A" : gender),
-              ),
-              Container(
-                child: CustomProfileTile(
-                    Icons.grade, 'Age', age == null ? "N/A" : age.toString()),
+                child: EditProfileTile(Icons.grade, 'Age'),
               ),
               Container(
                 child: CustomProfileTile(Icons.school, 'University',
@@ -224,18 +125,20 @@ class _ProfilePageState extends State<ProfilePage> {
                     courseName == null ? "N/A" : courseName),
               ),
               Container(
-                child: CustomProfileTile(Icons.trending_up, 'Year Of Study',
-                    yearOfStudy == null ? "N/A" : yearOfStudy.toString()),
+                child: EditProfileTile(Icons.trending_up, 'Year Of Study'),
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
                 child: RaisedButton(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18.0)),
-                  onPressed: () {Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => EditProfilePage()),
-                  );},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditProfilePage()),
+                    );
+                  },
                   color: new Color.fromRGBO(249, 89, 89, 1),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -243,12 +146,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Edit Profile',
+                          'Save Changes',
                           style: TextStyle(fontSize: 20.0),
                         ),
                         SizedBox(width: 10),
                         Icon(
-                          Icons.edit,
+                          Icons.save_alt,
                           color: Colors.black,
                         ),
                       ],
