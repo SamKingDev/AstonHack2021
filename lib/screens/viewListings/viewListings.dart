@@ -86,8 +86,8 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
           .collection("listings")
           .where("pricePerWeek", isGreaterThanOrEqualTo: minPrice)
           .where("pricePerWeek", isLessThanOrEqualTo: maxPrice)
-          .where("freeRooms", isEqualTo: roomsAvailable)
-          .where("totalRooms", isEqualTo: totalRooms)
+          .where("freeRooms", isLessThanOrEqualTo: roomsAvailable)
+          .where("totalRooms", isLessThanOrEqualTo: totalRooms)
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
