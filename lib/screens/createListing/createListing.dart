@@ -11,6 +11,7 @@ import 'package:uni_roomie/blocs/auth_bloc.dart';
 import 'package:uni_roomie/customtiles/CustomTile.dart';
 import 'package:uni_roomie/objects/listing.dart';
 import 'package:uni_roomie/screens/login/login.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
 
 //Divider - > Container(height: 100, child: Divider(color: Colors.black))
 
@@ -48,6 +49,7 @@ class _createListingPageState extends State<createListingPage> {
     TextEditingController priceCont = new TextEditingController();
     TextEditingController totalRoomsCont = new TextEditingController();
     TextEditingController freeRoomsCont = new TextEditingController();
+    LocationResult result;
     var authBloc = Provider.of<AuthBloc>(context, listen: false);
     return Scaffold(
       drawer: CustomDrawer(authBloc),
@@ -90,49 +92,33 @@ class _createListingPageState extends State<createListingPage> {
                       textContainer('Title...', 'Listing Title', titleCont),
                       SizedBox(height: 50),
                       Container(
-                          //Address
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0)),
+                          onPressed: () async {
+                             result = await showLocationPicker(context, "AIzaSyDY6RwTm0Dhr7YMs_jLi6B8fwqhTyCqzJw");
+                          },
+                          color: new Color.fromRGBO(249, 89, 89, 1),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                            Text(
-                              "Location",
-                              style: TextStyle(
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                Text(
+                                  'Find Location On Map',
+                                  style: TextStyle(fontSize: 20.0),
+                                ),
+                                SizedBox(width: 10),
+                                Icon(
+                                  Icons.map,
+                                  color: Colors.black,
+                                ),
+                              ],
                             ),
-                            TextField(
-                              controller: latCont,
-                              decoration: InputDecoration(
-                                  hintStyle: TextStyle(color: Colors.grey[600]),
-                                  enabledBorder: new UnderlineInputBorder(),
-                                  focusedBorder: new UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: new Color.fromRGBO(249, 89, 89, 1),
-                                    ),
-                                  ),
-                                  labelText: 'Latitude',
-                                  labelStyle: TextStyle(fontSize: 12.0)),
-                              keyboardType: TextInputType.multiline,
-                              maxLines: null,
-                              cursorColor: new Color.fromRGBO(249, 89, 89, 1),
-                            ),
-                            TextField(
-                              controller: lonCont,
-                              decoration: InputDecoration(
-                                  hintStyle: TextStyle(color: Colors.grey[600]),
-                                  enabledBorder: new UnderlineInputBorder(),
-                                  focusedBorder: new UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: new Color.fromRGBO(249, 89, 89, 1),
-                                    ),
-                                  ),
-                                  labelText: 'Longitude',
-                                  labelStyle: TextStyle(fontSize: 12.0)),
-                              keyboardType: TextInputType.multiline,
-                              maxLines: null,
-                            ),
-                          ])),
+                          ),
+                        ),
+                      ),
                       SizedBox(
                         height: 50,
                       ),
@@ -230,8 +216,8 @@ class _createListingPageState extends State<createListingPage> {
                               void insertRow() async {
                                 Listing listing = new Listing(
                                     titleCont.text,
-                                    new GeoPoint(double.parse(latCont.text),
-                                        double.parse(lonCont.text)),
+                                    new GeoPoint(result.latLng.latitude,
+                                        result.latLng.longitude),
                                     double.parse(priceCont.text),
                                     int.parse(totalRoomsCont.text),
                                     int.parse(freeRoomsCont.text),
