@@ -19,7 +19,7 @@ class Listing {
     this.pricePerWeek = map["pricePerWeek"];
     this.totalRooms = map["totalRooms"];
     this.freeRooms = map["freeRooms"];
-    this.genderPreference = Gender.values.firstWhere((e) => e.toString() == map["genderPreference"]);
+    this.genderPreference = Gender.values.firstWhere((e) => e.toString() == "Gender." + map["genderPreference"]);
     this.photoURLs = map["photoURLs"];
   }
 
@@ -33,7 +33,7 @@ class Listing {
       "pricePerWeek": pricePerWeek,
       "totalRooms": totalRooms,
       "freeRooms": freeRooms,
-      "genderPreference": genderPreference.toString(),
+      "genderPreference": genderPreference.toString().split(".")[1],
       "photoURLs": photoURLs
     };
   }
@@ -43,5 +43,5 @@ enum Gender {
   Female,
   Male,
   Other,
-  NoPreferrence
+  NoPreference
 }
