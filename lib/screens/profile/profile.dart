@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_roomie/blocs/auth_bloc.dart';
 import 'package:uni_roomie/customtiles/CustomTile.dart';
@@ -24,6 +27,11 @@ class _ProfilePageState extends State<ProfilePage> {
   DocumentReference course;
   String courseName;
   int yearOfStudy;
+  String userId;
+  String profilePhoto;
+
+  File _image;
+  final picker = ImagePicker();
 
   @override
   void initState() {
@@ -36,8 +44,9 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         );
       } else {
+        userId = fbUser.uid;
         DocumentReference documentReference =
-        FirebaseFirestore.instance.collection('users').doc(fbUser.uid);
+            FirebaseFirestore.instance.collection('users').doc(fbUser.uid);
         documentReference.snapshots().listen((event) {
           setState(() {
             if (!mounted) return;
@@ -46,10 +55,15 @@ class _ProfilePageState extends State<ProfilePage> {
             gender = event.data()["gender"];
             age = event.data()["age"];
             university = event.data()["university"];
-            university.get().then((value) => setState(() {universityName = value.data()["name"];}));
+            university.get().then((value) => setState(() {
+                  universityName = value.data()["name"];
+                }));
             course = event.data()["course"];
-            course.get().then((value) => setState(() {courseName = value.data()["name"];}));
+            course.get().then((value) => setState(() {
+                  courseName = value.data()["name"];
+                }));
             yearOfStudy = event.data()["yearOfStudy"];
+            profilePhoto = event.data()["profilePhoto"];
           });
         });
       }
@@ -57,9 +71,58 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
   }
 
+  Future getImage(ImageSource source) async {
+    final pickedFile = await picker.getImage(source: source);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        UploadTask uploadTask =
+            FirebaseStorage.instance.ref('profilePhotos/$userId.png').putFile(_image);
+        uploadTask.then((snapshot) => {
+              snapshot.ref
+                  .getDownloadURL()
+                  .then((value) => {
+                    FirebaseFirestore.instance.collection("users").doc(userId).update({"profilePhoto": value})
+              })
+            });
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var authBloc = Provider.of<AuthBloc>(context, listen: false);
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget cameraButton = FlatButton(
+      child: Text("Camera"),
+      onPressed: () {
+        Navigator.of(context).pop();
+        getImage(ImageSource.camera);
+      },
+    );
+    Widget galleryButton = FlatButton(
+      child: Text("Gallery"),
+      onPressed: () {
+        Navigator.of(context).pop();
+        getImage(ImageSource.gallery);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Photo Location"),
+      content: Text("Where do you want to select your new profile photo from?"),
+      actions: [cancelButton, galleryButton, cameraButton],
+    );
     return Scaffold(
       drawer: CustomDrawer(authBloc),
       appBar: AppBar(
@@ -80,7 +143,9 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Container(
                 child: Center(
                   child: CircleAvatar(
-                    backgroundImage: AssetImage('assets/avatar4.png'),
+                    backgroundImage: profilePhoto == null
+                        ? AssetImage('assets/avatar4.png')
+                        : NetworkImage(profilePhoto),
                     radius: 40.0,
                   ),
                 ),
@@ -91,7 +156,12 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Container(
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return alert;
+                      },
+                    ),
                     child: Row(
                       children: [
                         Text(
@@ -118,35 +188,43 @@ class _ProfilePageState extends State<ProfilePage> {
           padding: EdgeInsets.all(20),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-              color: new Color.fromRGBO(180, 190, 201, 1),// set border width
-              borderRadius: BorderRadius.all(
-                  Radius.circular(10.0)), // set rounded corner radius
-              boxShadow: [BoxShadow(blurRadius: 10,color: Colors.black,offset: Offset(1,3))]),
+              color: new Color.fromRGBO(180, 190, 201, 1),
+              // set border width
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              // set rounded corner radius
+              boxShadow: [
+                BoxShadow(
+                    blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
+              ]),
           child: Column(
             children: [
               Container(
-                child: CustomProfileTile(Icons.account_box, 'Name', fullName == null ? "N/A" : fullName),
+                child: CustomProfileTile(Icons.account_box, 'Name',
+                    fullName == null ? "N/A" : fullName),
+              ),
+              Container(
+                child: CustomProfileTile(Icons.alternate_email, 'Email',
+                    email == null ? "N/A" : email),
               ),
               Container(
                 child: CustomProfileTile(
-                    Icons.alternate_email, 'Email', email == null ? "N/A" : email),
-              ),
-              Container(
-                child: CustomProfileTile(Icons.person, 'Gender', gender == null ? "N/A" : gender),
-              ),
-              Container(
-                child: CustomProfileTile(Icons.grade, 'Age', age == null ? "N/A" : age.toString()),
+                    Icons.person, 'Gender', gender == null ? "N/A" : gender),
               ),
               Container(
                 child: CustomProfileTile(
-                    Icons.school, 'University', universityName == null ? "N/A" : universityName),
+                    Icons.grade, 'Age', age == null ? "N/A" : age.toString()),
               ),
               Container(
-                child: CustomProfileTile(
-                    Icons.bookmark, 'Course', courseName == null ? "N/A" : courseName),
+                child: CustomProfileTile(Icons.school, 'University',
+                    universityName == null ? "N/A" : universityName),
               ),
               Container(
-                child: CustomProfileTile(Icons.trending_up, 'Year Of Study', yearOfStudy == null ? "N/A" : yearOfStudy.toString()),
+                child: CustomProfileTile(Icons.bookmark, 'Course',
+                    courseName == null ? "N/A" : courseName),
+              ),
+              Container(
+                child: CustomProfileTile(Icons.trending_up, 'Year Of Study',
+                    yearOfStudy == null ? "N/A" : yearOfStudy.toString()),
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
