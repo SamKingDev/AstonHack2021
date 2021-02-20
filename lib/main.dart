@@ -24,7 +24,6 @@ void main() async {
         '/profile': (context) => ProfilePage(),
         '/createListing': (context) => createListingPage(),
         '/viewListing': (context) => viewListingPage(),
-        '/viewOtherProfile': (context)=> viewOtherProfilePage(),
       },
     ),
   ));
