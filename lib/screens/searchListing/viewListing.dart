@@ -16,8 +16,11 @@ class viewListingPage extends StatefulWidget {
 class _viewListingPageState extends State<viewListingPage> {
   StreamSubscription<User> loginStateSubscription;
   String university;
-  RangeValues _priceRangeValues = const RangeValues(100, 1000);
+  RangeValues _priceRangeValues = const RangeValues(50, 450);
   RangeValues _distanceRangeValues = const RangeValues(0, 50);
+
+  TextEditingController _roomsAvailableController = TextEditingController();
+  TextEditingController _totalRoomsController = TextEditingController();
 
   @override
   void initState() {
@@ -59,7 +62,7 @@ class _viewListingPageState extends State<viewListingPage> {
             ),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(30,10,30,10),
+            margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
             padding: EdgeInsets.all(20),
             alignment: Alignment.center,
             decoration: BoxDecoration(
@@ -77,14 +80,15 @@ class _viewListingPageState extends State<viewListingPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Price Range'),
-                    Text('£${_priceRangeValues.start.round()} - £${_priceRangeValues.end.round()} '),
+                    Text(
+                        '£${_priceRangeValues.start.round()} - £${_priceRangeValues.end.round()} '),
                   ],
                 ),
                 RangeSlider(
                   values: _priceRangeValues,
-                  min: 100,
-                  max: 1000,
-                  divisions: 45,
+                  min: 50,
+                  max: 450,
+                  divisions: 40,
                   labels: RangeLabels(
                     _priceRangeValues.start.round().toString(),
                     _priceRangeValues.end.round().toString(),
@@ -99,7 +103,7 @@ class _viewListingPageState extends State<viewListingPage> {
             ),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(30,10,30,10),
+            margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
             padding: EdgeInsets.all(20),
             alignment: Alignment.center,
             decoration: BoxDecoration(
@@ -139,7 +143,7 @@ class _viewListingPageState extends State<viewListingPage> {
             ),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(30,10,30,10),
+            margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
             padding: EdgeInsets.all(20),
             alignment: Alignment.center,
             decoration: BoxDecoration(
@@ -157,6 +161,7 @@ class _viewListingPageState extends State<viewListingPage> {
                 SizedBox(width: 20),
                 Flexible(
                   child: TextFormField(
+                    controller: _roomsAvailableController,
                     keyboardType: TextInputType.number,
                     cursorColor: new Color.fromRGBO(249, 89, 89, 1),
                     decoration: InputDecoration(
@@ -179,7 +184,7 @@ class _viewListingPageState extends State<viewListingPage> {
             ),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(30,10,30,10),
+            margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
             padding: EdgeInsets.all(20),
             alignment: Alignment.center,
             decoration: BoxDecoration(
@@ -197,6 +202,7 @@ class _viewListingPageState extends State<viewListingPage> {
                 SizedBox(width: 20),
                 Flexible(
                   child: TextFormField(
+                    controller: _totalRoomsController,
                     keyboardType: TextInputType.number,
                     cursorColor: new Color.fromRGBO(249, 89, 89, 1),
                     decoration: InputDecoration(
@@ -223,10 +229,28 @@ class _viewListingPageState extends State<viewListingPage> {
             child: RaisedButton(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0)),
-              onPressed: () {Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => viewListingsPage()),
-              );},
+              onPressed: () {
+                int minPrice = _priceRangeValues.start.toInt();
+                int maxPrice = _priceRangeValues.end.toInt();
+
+                int minDistance = _distanceRangeValues.start.toInt();
+                int maxDistance = _distanceRangeValues.end.toInt();
+
+                int roomsAvailable = _roomsAvailableController.text.isEmpty ? 0 : int.parse(_roomsAvailableController.text);
+                int totalRooms = _totalRoomsController.text.isEmpty ? 0 : int.parse(_totalRoomsController.text);
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ViewListingsPage(
+                    minPrice: minPrice,
+                    maxPrice: maxPrice,
+                    minDistance: minDistance,
+                    maxDistance: maxDistance,
+                    roomsAvailable: roomsAvailable,
+                    totalRooms: totalRooms,
+                  )),
+                );
+              },
               color: new Color.fromRGBO(249, 89, 89, 1),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
