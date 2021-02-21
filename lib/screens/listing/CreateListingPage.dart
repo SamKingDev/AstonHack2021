@@ -10,9 +10,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_roomie/blocs/AuthBloc.dart';
 import 'package:uni_roomie/customtiles/CustomTile.dart';
+import 'package:uni_roomie/models/ListingRecord.dart';
 import 'package:uni_roomie/screens/login/LoginPage.dart';
 
-import 'file:///C:/Users/Joe/AndroidStudioProjects/AstonHack2021/lib/models/ListingRecord.dart';
+import 'ViewListingPage.dart';
 
 //Divider - > Container(height: 100, child: Divider(color: Colors.black))
 
@@ -209,7 +210,7 @@ class _CreateListingPageState extends State<CreateListingPage> {
                                 "Female",
                                 "Male",
                                 "Other",
-                                "NoPreference"
+                                "No Preference"
                               ].map<DropdownMenuItem<String>>((e) {
                                 return DropdownMenuItem<String>(
                                     value: e, child: Text(e));
@@ -271,15 +272,23 @@ class _CreateListingPageState extends State<CreateListingPage> {
                                     Gender.values.firstWhere(
                                         (element) =>
                                             element.toString() ==
-                                            "Gender." + genderSelectedValue,
+                                            "Gender." + genderSelectedValue.replaceAll(" ", ""),
                                         orElse: () => null),
                                     await uploadImages(),
                                     userReference);
                                 FirebaseFirestore.instance
                                     .collection("listings")
-                                    .add(listing.toFirebase());
+                                    .add(listing.toFirebase())
+                                    .then((value) {
+                                  listing.reference = value;
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ViewListingPage(listing)),
+                                  );
+                                });
                               }
-
                               insertRow();
                             },
                           ),
@@ -381,7 +390,7 @@ class _ImagesState extends State<Images> {
       imgs.add(Container(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Image(image: AssetImage(img.path)),
+          child: Image.file(img),
         ),
         height: 300,
       ));
