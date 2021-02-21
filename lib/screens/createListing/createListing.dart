@@ -16,18 +16,23 @@ import 'package:google_map_location_picker/google_map_location_picker.dart';
 //Divider - > Container(height: 100, child: Divider(color: Colors.black))
 
 class createListingPage extends StatefulWidget {
+  TextEditingController titleCont = new TextEditingController();
+  TextEditingController priceCont = new TextEditingController();
+  TextEditingController totalRoomsCont = new TextEditingController();
+  TextEditingController freeRoomsCont = new TextEditingController();
+  LocationResult result;
   @override
   _createListingPageState createState() => _createListingPageState();
 }
 
 class _createListingPageState extends State<createListingPage> {
   StreamSubscription<User> loginStateSubscription;
+  DocumentReference userReference;
 
   bool _hasBeenPressed = false;
 
   @override
   void initState() {
-
     var authBloc = Provider.of<AuthBloc>(context, listen: false);
     loginStateSubscription = authBloc.currentUser.listen((fbUser) {
       if (fbUser == null) {
@@ -36,6 +41,14 @@ class _createListingPageState extends State<createListingPage> {
             builder: (context) => LoginPage(),
           ),
         );
+      } else {
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc(fbUser.uid)
+            .get()
+            .then((value) => setState(() {
+                  userReference = value.reference;
+                }));
       }
     });
     super.initState();
@@ -46,13 +59,6 @@ class _createListingPageState extends State<createListingPage> {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController titleCont = new TextEditingController();
-    TextEditingController lonCont = new TextEditingController();
-    TextEditingController latCont = new TextEditingController();
-    TextEditingController priceCont = new TextEditingController();
-    TextEditingController totalRoomsCont = new TextEditingController();
-    TextEditingController freeRoomsCont = new TextEditingController();
-    LocationResult result;
     var authBloc = Provider.of<AuthBloc>(context, listen: false);
     return Scaffold(
       drawer: CustomDrawer(authBloc),
@@ -92,31 +98,39 @@ class _createListingPageState extends State<createListingPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      textContainer('Title...', 'Listing Title', titleCont),
+                      textContainer('Title...', 'Listing Title', widget.titleCont),
                       SizedBox(height: 50),
                       Container(
-                        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
+                        padding:
+                            const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
                         child: Column(
                           children: [
                             RaisedButton(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(18.0)),
                               onPressed: () async {
-                                 result = await showLocationPicker(context, "AIzaSyDY6RwTm0Dhr7YMs_jLi6B8fwqhTyCqzJw");
-                                 if (result != null) {setState(() {
-                                   _hasBeenPressed = !_hasBeenPressed;
-                                 });
-                                 }
+                                widget.result = await showLocationPicker(context,
+                                    "AIzaSyDY6RwTm0Dhr7YMs_jLi6B8fwqhTyCqzJw");
+                                if (widget.result != null) {
+                                  setState(() {
+                                    _hasBeenPressed = !_hasBeenPressed;
+                                  });
+                                }
                               },
-                              color: _hasBeenPressed ?  Colors.green : new Color.fromRGBO(249, 89, 89, 1),
+                              color: _hasBeenPressed
+                                  ? Colors.green
+                                  : new Color.fromRGBO(249, 89, 89, 1),
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text( _hasBeenPressed ?  'Edit Selected Location' : 'Find Location On Map',
-                                      style: TextStyle(fontSize: 20.0,
-                                      color: Colors.white),
+                                    Text(
+                                      _hasBeenPressed
+                                          ? 'Edit Selected Location'
+                                          : 'Find Location On Map',
+                                      style: TextStyle(
+                                          fontSize: 20.0, color: Colors.white),
                                     ),
                                     SizedBox(width: 10),
                                     Icon(
@@ -131,16 +145,17 @@ class _createListingPageState extends State<createListingPage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 child: Visibility(
-                                  child: Text("Location Set",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),),
+                                  child: Text(
+                                    "Location Set",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                   maintainSize: true,
                                   maintainAnimation: true,
                                   maintainState: true,
                                   visible: _hasBeenPressed,
                                 ),
-
                               ),
                             ),
                           ],
@@ -149,17 +164,17 @@ class _createListingPageState extends State<createListingPage> {
                       SizedBox(
                         height: 30,
                       ),
-                      numberContainer('Price...', 'Price Per Week', priceCont),
+                      numberContainer('Price...', 'Price Per Week', widget.priceCont),
                       SizedBox(
                         height: 50,
                       ),
                       numberContainer('Number...', 'Total Rooms In Property',
-                          totalRoomsCont),
+                          widget.totalRoomsCont),
                       SizedBox(
                         height: 50,
                       ),
                       numberContainer(
-                          'Rooms...', 'Rooms Available', freeRoomsCont),
+                          'Rooms...', 'Rooms Available', widget.freeRoomsCont),
                       SizedBox(
                         height: 50,
                       ),
@@ -242,18 +257,19 @@ class _createListingPageState extends State<createListingPage> {
 
                               void insertRow() async {
                                 Listing listing = new Listing(
-                                    titleCont.text,
-                                    new GeoPoint(result.latLng.latitude,
-                                        result.latLng.longitude),
-                                    double.parse(priceCont.text),
-                                    int.parse(totalRoomsCont.text),
-                                    int.parse(freeRoomsCont.text),
+                                    widget.titleCont.text,
+                                    new GeoPoint(widget.result.latLng.latitude,
+                                        widget.result.latLng.longitude),
+                                    double.parse(widget.priceCont.text),
+                                    int.parse(widget.totalRoomsCont.text),
+                                    int.parse(widget.freeRoomsCont.text),
                                     Gender.values.firstWhere(
                                         (element) =>
                                             element.toString() ==
                                             "Gender." + genderSelectedValue,
                                         orElse: () => null),
-                                    await uploadImages());
+                                    await uploadImages(),
+                                    userReference);
                                 FirebaseFirestore.instance
                                     .collection("listings")
                                     .add(listing.toFirebase());
@@ -334,34 +350,34 @@ class _ImagesState extends State<Images> {
     imgs.add(
       Container(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-          child: Container(
-            child: Column(
-              children: [
-                Text('Add Photo'),
-                Center(
-                    child: IconButton(
-                      icon: CircleAvatar(
-                        backgroundImage: AssetImage('assets/empty_photo.png'),
-                      ),
-                      onPressed: () => showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return alert;
-                        },
-                      ),
-                    ),
+        child: Container(
+          child: Column(
+            children: [
+              Text('Add Photo'),
+              Center(
+                child: IconButton(
+                  icon: CircleAvatar(
+                    backgroundImage: AssetImage('assets/empty_photo.png'),
+                  ),
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert;
+                    },
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
+      ),
     );
     widget.images.forEach((img) {
       imgs.add(Container(
-           child: Padding(
-             padding: const EdgeInsets.all(20.0),
-             child: Image(image: AssetImage(img.path)),
-           ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Image(image: AssetImage(img.path)),
+        ),
         height: 300,
       ));
     });

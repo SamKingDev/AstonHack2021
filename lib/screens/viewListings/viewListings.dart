@@ -36,6 +36,15 @@ class _Tag extends State<Tag> {
   }
 }
 
+class Listing extends StatefulWidget {
+  String img;
+  String title;
+  double distance; //in miles
+  int rooms;
+  int price;
+  String genderPreference;
+
+  Listing(this.img, this.title, this.distance, this.rooms, this.price, this.genderPreference);
 class ViewListingsPage extends StatefulWidget {
   final int minPrice;
   final int maxPrice;
