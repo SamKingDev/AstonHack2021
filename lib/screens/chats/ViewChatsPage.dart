@@ -36,21 +36,22 @@ class _ViewChatsPageState extends State<ViewChatsPage> {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection("chats")
-          .where("users", arrayContains: userReference)
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
 
-        return _buildList(context, snapshot.data.docs);
+        List<ChatRecord> userRecords = snapshot.data.docs.map((e) => ChatRecord.fromSnapshot(e)).toList();;
+
+        return _buildList(context, userRecords.where((e) => e.user1 == userReference || e.user2 == userReference).toList());
       },
     );
   }
 
   Widget _buildList(
-      BuildContext context, List<QueryDocumentSnapshot> documents) {
+      BuildContext context, List<ChatRecord> chatRecords) {
     return ListView(
       padding: const EdgeInsets.only(top: 20.0),
-      children: documents
+      children: chatRecords
           .map<Widget>((data) => _buildListItem(context, data))
           .toList(),
     );
@@ -61,9 +62,7 @@ class _ViewChatsPageState extends State<ViewChatsPage> {
     return await documentReference.get();
   }
 
-  _buildListItem(BuildContext context, QueryDocumentSnapshot data) {
-    final chatRecord = ChatRecord.fromSnapshot(data);
-
+  _buildListItem(BuildContext context, ChatRecord chatRecord) {
     User currentUser = FirebaseAuth.instance.currentUser;
 
     DocumentReference userReference =
