@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:uni_roomie/objects/listing.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SingleListingPage extends StatefulWidget {
   Listing listing;
+  String userName;
 
   SingleListingPage(this.listing);
 
@@ -12,15 +14,26 @@ class SingleListingPage extends StatefulWidget {
 
 class _SingleListingPageState extends State<SingleListingPage> {
   @override
+  void initState() {
+    if (widget.listing != null && widget.listing.userReference != null) FirebaseFirestore.instance
+        .collection("users")
+        .doc(widget.listing.userReference.id)
+        .get()
+        .then((value) => setState(() {
+              widget.userName = value.data()["full_name"];
+            }));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: new Color.fromRGBO(69, 93, 122, 1) ,
+        backgroundColor: new Color.fromRGBO(69, 93, 122, 1),
         title: Text("Property"),
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.fromLTRB(30,10,30,10),
+          margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
           padding: EdgeInsets.all(20),
           alignment: Alignment.center,
           decoration: BoxDecoration(
@@ -34,29 +47,30 @@ class _SingleListingPageState extends State<SingleListingPage> {
               ]),
           child: Column(children: [
             Container(
-              //list of photos
+                //list of photos
 
+                ),
+            Container(
+              child: ListingInformationTile(
+                  Icons.house, 'Title:', widget.listing.title),
             ),
             Container(
-              child: ListingInformationTile(Icons.house, 'Title:', widget.listing.title),
-
+              child: ListingInformationTile(Icons.money, 'Price Per Week:',
+                  '£${widget.listing.pricePerWeek}'),
+            ),
+            Container(),
+            Container(
+              child: ListingInformationTile(Icons.room, 'Rooms Available',
+                  widget.listing.freeRooms.toString()),
             ),
             Container(
-              child: ListingInformationTile(Icons.money, 'Price Per Week:', '£${widget.listing.pricePerWeek}'),
-            ),
-            Container(
-
-
-            ),
-            Container(
-              child: ListingInformationTile(Icons.room, 'Rooms Available', widget.listing.freeRooms.toString()),
-            ),
-            Container(
-                child: ListingInformationTile(Icons.person, 'Owner\'s Name', 'User Profile Icon'),
+              child: ListingInformationTile(
+                  Icons.person, 'Owner\'s Name', widget.userName == null ? "N/A" : widget.userName),
             ),
             FittedBox(
               child: Container(
-                child: ListingInformationTile(Icons.group, 'Gender Preference', widget.listing.genderPreference.toString().split(".")[1]),
+                child: ListingInformationTile(Icons.group, 'Gender Preference',
+                    widget.listing.genderPreference.toString().split(".")[1]),
               ),
             ),
           ]),
@@ -65,7 +79,6 @@ class _SingleListingPageState extends State<SingleListingPage> {
     );
   }
 }
-
 
 class ListingInformationTile extends StatefulWidget {
   IconData icon;

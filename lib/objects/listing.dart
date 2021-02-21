@@ -22,6 +22,7 @@ class Listing {
     this.freeRooms = map["freeRooms"];
     this.genderPreference = Gender.values.firstWhere((e) => e.toString() == "Gender." + map["genderPreference"]);
     this.photoURLs = map["photoURLs"];
+    this.userReference = map["owner"];
   }
 
   Listing.fromSnapshot(DocumentSnapshot snapshot)
@@ -36,7 +37,7 @@ class Listing {
       "freeRooms": freeRooms,
       "genderPreference": genderPreference.toString().split(".")[1],
       "photoURLs": photoURLs,
-      "owner": userReference
+      "owner": userReference,
     };
   }
 }
