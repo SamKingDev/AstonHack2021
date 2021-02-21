@@ -108,7 +108,6 @@ class _viewOtherProfilePageState extends State<viewOtherProfilePage> {
     var authBloc = Provider.of<AuthBloc>(context, listen: false);
 
     return Scaffold(
-      drawer: CustomDrawer(authBloc),
       appBar: AppBar(
         title: Text('${fullName}s Profile'),
         centerTitle: true,
