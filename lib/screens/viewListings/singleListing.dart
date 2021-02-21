@@ -12,6 +12,7 @@ import 'package:uni_roomie/screens/chats/UserRecord.dart';
 import 'package:uni_roomie/screens/chats/ViewChatPage.dart';
 import 'package:uni_roomie/screens/login/login.dart';
 import 'package:uni_roomie/screens/profile/viewOtherProfile.dart';
+import 'package:uni_roomie/screens/viewListings/pinOnMap.dart';
 
 class SingleListingPage extends StatefulWidget {
   StreamSubscription<User> loginStateSubscription;
@@ -280,6 +281,38 @@ class _SingleListingPageState extends State<SingleListingPage> {
                       SizedBox(width: 10),
                       Icon(
                         Icons.perm_identity,
+                        color: Colors.black,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
+              child: RaisedButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0)),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PinOnMap(widget.listing.geoPoint)),
+                  );
+                },
+                color: Colors.lightBlueAccent,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'View on map',
+                        style: TextStyle(fontSize: 20.0),
+                      ),
+                      SizedBox(width: 10),
+                      Icon(
+                        Icons.map,
                         color: Colors.black,
                       ),
                     ],
