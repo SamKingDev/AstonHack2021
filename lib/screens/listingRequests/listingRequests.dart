@@ -55,12 +55,14 @@ class _Request extends State<Request> {
                         SizedBox(
                           height: 15,
                         ),
+                        Row(
+                          children: [
+                            SizedBox(width:180),
+                            Icon(Icons.arrow_drop_down,
+                            size: 40,),
+                          ],
+                        ),
                       ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [Text("View Profile")],
                     ),
                   ],
                 ),
@@ -125,70 +127,73 @@ class RequestCard extends StatelessWidget {
               header: Request(tmpImage, "Bob"),
               // <-- Driven by ExpandableController from ExpandableNotifier
               collapsed: Container(),
-              expanded: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0)),
-                    onPressed: null,
-                    color: new Color.fromRGBO(249, 89, 89, 1),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Accept',
-                            style: TextStyle(fontSize: 20.0),
-                          ),
-                        ],
+              expanded: Padding(
+                padding: const EdgeInsets.fromLTRB(30,0,30,0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                      onPressed: (){},
+                      color: new Color.fromRGBO(249, 89, 89, 1),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Accept',
+                              style: TextStyle(fontSize: 15.0),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0)),
-                    onPressed: null,
-                    color: new Color.fromRGBO(249, 89, 89, 1),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Delete',
-                            style: TextStyle(fontSize: 20.0),
-                          ),
-                        ],
+                    SizedBox(
+                      width: 15,
+                    ),
+                    RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                      onPressed: (){},
+                      color: new Color.fromRGBO(249, 89, 89, 1),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Deny',
+                              style: TextStyle(fontSize: 15.0),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0)),
-                    onPressed: null,
-                    color: new Color.fromRGBO(249, 89, 89, 1),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Messsage',
-                            style: TextStyle(fontSize: 20.0),
-                          ),
-                        ],
+                    SizedBox(
+                      width: 15,
+                    ),
+                    RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                      onPressed: (){},
+                      color: new Color.fromRGBO(249, 89, 89, 1),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Messsage Owner' ,
+                              style: TextStyle(fontSize: 15.0),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           )
