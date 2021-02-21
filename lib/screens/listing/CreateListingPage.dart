@@ -13,6 +13,8 @@ import 'package:uni_roomie/customtiles/CustomTile.dart';
 import 'package:uni_roomie/models/ListingRecord.dart';
 import 'package:uni_roomie/screens/login/LoginPage.dart';
 
+import 'ViewListingPage.dart';
+
 //Divider - > Container(height: 100, child: Divider(color: Colors.black))
 
 class CreateListingPage extends StatefulWidget {
@@ -208,7 +210,7 @@ class _CreateListingPageState extends State<CreateListingPage> {
                                 "Female",
                                 "Male",
                                 "Other",
-                                "NoPreference"
+                                "No Preference"
                               ].map<DropdownMenuItem<String>>((e) {
                                 return DropdownMenuItem<String>(
                                     value: e, child: Text(e));
@@ -270,15 +272,23 @@ class _CreateListingPageState extends State<CreateListingPage> {
                                     Gender.values.firstWhere(
                                         (element) =>
                                             element.toString() ==
-                                            "Gender." + genderSelectedValue,
+                                            "Gender." + genderSelectedValue.replaceAll(" ", ""),
                                         orElse: () => null),
                                     await uploadImages(),
                                     userReference);
                                 FirebaseFirestore.instance
                                     .collection("listings")
-                                    .add(listing.toFirebase());
+                                    .add(listing.toFirebase())
+                                    .then((value) {
+                                  listing.reference = value;
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ViewListingPage(listing)),
+                                  );
+                                });
                               }
-
                               insertRow();
                             },
                           ),
