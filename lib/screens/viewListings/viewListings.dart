@@ -167,7 +167,6 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
                         ),
                         Row(
                           children: [
-                            Tag("Male", Colors.red),
                             Tag("${listingRecord.totalRooms} Bedroom House",
                                 Colors.blue),
                             Tag("${listingRecord.freeRooms} Free Rooms",
