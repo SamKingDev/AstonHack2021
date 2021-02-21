@@ -3,11 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:uni_roomie/screens/profile/viewOtherProfile.dart';
+import 'package:uni_roomie/screens/helpers.dart';
+import 'package:uni_roomie/screens/profile/ViewOtherProfilePage.dart';
 
-import 'ChatRecord.dart';
-import 'MessageRecord.dart';
-import 'UserRecord.dart';
+import '../../models/ChatRecord.dart';
+import '../../models/MessageRecord.dart';
+import '../../models/UserRecord.dart';
 
 class ViewChatPage extends StatefulWidget {
   final ChatRecord chatRecord;
@@ -74,7 +75,9 @@ class _ViewChatPageState extends State<ViewChatPage> {
                 ),
                 onPressed: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => viewOtherProfilePage(otherUser.reference.id)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ViewOtherProfilePage(otherUser.reference.id)),
                 ),
               ),
               SizedBox(
@@ -135,11 +138,7 @@ class _ViewChatPageState extends State<ViewChatPage> {
                       return;
                     }
 
-                    User currentUser = FirebaseAuth.instance.currentUser;
-
-                    DocumentReference userReference = FirebaseFirestore.instance
-                        .collection("users")
-                        .doc(currentUser.uid);
+                    DocumentReference userReference = getUserReference();
 
                     chatRecord.reference.collection("messages").add({
                       "content": message,

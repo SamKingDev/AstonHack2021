@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uni_roomie/blocs/auth_bloc.dart';
+import 'package:uni_roomie/blocs/AuthBloc.dart';
 import 'package:uni_roomie/customtiles/CustomTile.dart';
-import 'package:uni_roomie/screens/login/login.dart';
-import 'package:uni_roomie/screens/profile/profile.dart';
+import 'package:uni_roomie/screens/login/LoginPage.dart';
+import 'package:uni_roomie/screens/profile/ProfilePage.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -56,17 +56,23 @@ class _EditProfilePageState extends State<EditProfilePage> {
             nameController.text = fullName;
             email = event.data()["email"];
             gender = event.data()["gender"];
-            age = event.data()["age"];
+            age = event.data()["age"] ?? 20;
             ageController.text = age.toString();
             university = event.data()["university"];
-            university.get().then((value) => setState(() {
-                  universityName = value.id;
-                }));
+            if (university != null)
+              university.get().then((value) => setState(() {
+                    universityName = value.id;
+                  }));
+            else
+              universityName == null;
             course = event.data()["course"];
-            course.get().then((value) => setState(() {
-                  courseName = value.id;
-                }));
-            yearOfStudy = event.data()["yearOfStudy"];
+            if (course != null)
+              course.get().then((value) => setState(() {
+                    courseName = value.id;
+                  }));
+            else
+              courseName = null;
+            yearOfStudy = event.data()["yearOfStudy"] ?? 1;
             yearOfStudyController.text = yearOfStudy.toString();
             profilePhoto = event.data()["profilePhoto"];
           });
@@ -76,21 +82,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
             .orderBy("name")
             .get()
             .then((results) {
-                  courseDocumentSnapshot = results.docs;
-                  results.docs.forEach((element) {
-                    courses.putIfAbsent(element.id, () => element["name"]);
-                  });
-                });
+          courseDocumentSnapshot = results.docs;
+          results.docs.forEach((element) {
+            setState(() {
+              courses.putIfAbsent(element.id, () => element["name"]);
+            });
+          });
+        });
         FirebaseFirestore.instance
             .collection('universities')
             .orderBy("name")
             .get()
             .then((results) {
-                  universityDocumentSnapshots = results.docs;
-                  results.docs.forEach((element) {
-                    universities.putIfAbsent(element.id, () => element["name"]);
-                  });
-                });
+          universityDocumentSnapshots = results.docs;
+          results.docs.forEach((element) {
+            setState(() {
+              universities.putIfAbsent(element.id, () => element["name"]);
+            });
+          });
+        });
       }
     });
     super.initState();
@@ -108,7 +118,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
         Icons.school, 'University', universities, universityName);
     EditProfileList courseProfile =
         EditProfileList(Icons.school, 'Course', courses, courseName);
-    EditProfileList genderProfile = EditProfileList(Icons.person, 'Gender', genders, gender);
+    EditProfileList genderProfile =
+        EditProfileList(Icons.person, 'Gender', genders, gender);
     return Scaffold(
       drawer: CustomDrawer(authBloc),
       appBar: AppBar(
@@ -123,7 +134,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Container(
               padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
                 color: new Color.fromRGBO(180, 190, 201, 1),
               ),
               child: Container(
@@ -143,15 +153,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
           margin: EdgeInsets.all(20),
           padding: EdgeInsets.all(20),
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-              color: new Color.fromRGBO(180, 190, 201, 1),
-              // set border width
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              // set rounded corner radius
-              boxShadow: [
-                BoxShadow(
-                    blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
-              ]),
+          // decoration: BoxDecoration(
+          //     color: new Color.fromRGBO(180, 190, 201, 1),
+          //     // set border width
+          //     borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          //     // set rounded corner radius
+          //     boxShadow: [
+          //       BoxShadow(
+          //           blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
+          //     ]),
           child: Column(
             children: [
               Container(
@@ -190,10 +200,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         .doc(userId)
                         .update({
                       "age": int.parse(ageController.text),
-                      "course": courseDocumentSnapshot.firstWhere((element) => element.id == courseProfile.selectedValue).reference,
+                      "course": courseDocumentSnapshot
+                          .firstWhere((element) =>
+                              element.id == courseProfile.selectedValue)
+                          .reference,
                       "full_name": nameController.text,
                       "gender": genderProfile.selectedValue,
-                      "university": universityDocumentSnapshots.firstWhere((element) => element.id == universityProfile.selectedValue).reference,
+                      "university": universityDocumentSnapshots
+                          .firstWhere((element) =>
+                              element.id == universityProfile.selectedValue)
+                          .reference,
                       "yearOfStudy": int.parse(yearOfStudyController.text)
                     });
                     Navigator.push(

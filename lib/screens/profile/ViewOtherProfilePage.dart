@@ -7,20 +7,21 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:uni_roomie/blocs/auth_bloc.dart';
+import 'package:uni_roomie/blocs/AuthBloc.dart';
 import 'package:uni_roomie/customtiles/CustomTile.dart';
-import 'package:uni_roomie/screens/login/login.dart';
+import 'package:uni_roomie/screens/login/LoginPage.dart';
 
-class viewOtherProfilePage extends StatefulWidget {
+class ViewOtherProfilePage extends StatefulWidget {
   String userId;
 
-  viewOtherProfilePage(this.userId);
+  ViewOtherProfilePage(this.userId);
 
   @override
-  _viewOtherProfilePageState createState() => _viewOtherProfilePageState(userId);
+  _ViewOtherProfilePageState createState() =>
+      _ViewOtherProfilePageState(userId);
 }
 
-class _viewOtherProfilePageState extends State<viewOtherProfilePage> {
+class _ViewOtherProfilePageState extends State<ViewOtherProfilePage> {
   StreamSubscription<User> loginStateSubscription;
   String fullName;
   String email;
@@ -36,7 +37,7 @@ class _viewOtherProfilePageState extends State<viewOtherProfilePage> {
 
   File _image;
 
-  _viewOtherProfilePageState(this.userId);
+  _ViewOtherProfilePageState(this.userId);
 
   final picker = ImagePicker();
 
@@ -108,7 +109,6 @@ class _viewOtherProfilePageState extends State<viewOtherProfilePage> {
     var authBloc = Provider.of<AuthBloc>(context, listen: false);
 
     return Scaffold(
-      drawer: CustomDrawer(authBloc),
       appBar: AppBar(
         title: Text('${fullName}s Profile'),
         centerTitle: true,

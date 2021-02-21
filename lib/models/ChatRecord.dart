@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatRecord {
-  // self
   final DocumentReference user1;
   final DocumentReference user2;
   final CollectionReference messages;
@@ -16,12 +15,6 @@ class ChatRecord {
 
   ChatRecord.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data(), reference: snapshot.reference);
-
-  ChatRecord test(Map<String, dynamic> map, value, {reference}) {
-    map["user2"] = value;
-
-    return ChatRecord.fromMap(map, reference: reference);
-  }
 
   @override
   String toString() => "ChatRecord<$user1:$user2:$messages:$reference>";

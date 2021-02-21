@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:uni_roomie/blocs/auth_bloc.dart';
-import 'package:uni_roomie/screens/chats/ViewChatsPage.dart';
-import 'package:uni_roomie/screens/createListing/createListing.dart';
-import 'package:uni_roomie/screens/login/login.dart';
-import 'package:uni_roomie/screens/profile/profile.dart';
-import 'package:uni_roomie/screens/searchListing/viewListing.dart';
-import 'package:uni_roomie/screens/viewListings/viewListings.dart';
-import 'package:uni_roomie/screens/listingRequests/listingRequests.dart';
+import 'package:uni_roomie/blocs/AuthBloc.dart';
+import 'package:uni_roomie/screens/chat/ViewChatsPage.dart';
+import 'package:uni_roomie/screens/listing/CreateListingPage.dart';
+import 'package:uni_roomie/screens/listing/ListingRequestsPage.dart';
+import 'package:uni_roomie/screens/listing/SearchListingsPage.dart';
+import 'package:uni_roomie/screens/listing/SearchListingsResultsPage.dart';
+import 'package:uni_roomie/screens/profile/ProfilePage.dart';
 
 class CustomDrawerTile extends StatefulWidget {
   IconData icon;
@@ -118,17 +117,34 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => createListingPage()),
+                          builder: (context) => CreateListingPage()),
                     )
                   }),
           CustomDrawerTile(
               Icons.house,
-              'View Listings',
+              'All Listings',
               () => {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => viewListingPage()),
+                          builder: (context) => SearchListingsResultsPage(
+                                minPrice: 0,
+                                maxPrice: 5000,
+                                minDistance: 0,
+                                maxDistance: 200,
+                                roomsAvailable: 50,
+                                totalRooms: 50,
+                              )),
+                    )
+                  }),
+          CustomDrawerTile(
+              Icons.search,
+              'Search Listings',
+              () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SearchListingsPage()),
                     )
                   }),
           CustomDrawerTile(
@@ -136,9 +152,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
               'Listing Requests',
               () => {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => listingRequests()),
-                    )
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ListingRequestsPage()))
                   }),
           CustomDrawerTile(
               Icons.message,
@@ -275,6 +291,9 @@ class EditProfileList extends StatefulWidget {
 class _EditProfileListState extends State<EditProfileList> {
   @override
   Widget build(BuildContext context) {
+    widget.selectedValue = widget.selectedValue == null
+        ? (widget.values.length == 0 ? null : widget.values.keys.first)
+        : widget.selectedValue;
     if (widget.values == null) return Container();
     List<DropdownMenuItem<String>> items = new List<DropdownMenuItem<String>>();
     widget.values.forEach((key, value) {
@@ -307,7 +326,6 @@ class _EditProfileListState extends State<EditProfileList> {
             onChanged: (String newValue) {
               setState(() {
                 widget.selectedValue = newValue;
-                print(widget.selectedValue);
               });
             },
             items: items,

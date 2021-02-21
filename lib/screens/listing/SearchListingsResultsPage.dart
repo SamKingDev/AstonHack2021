@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:uni_roomie/objects/listing.dart';
-import 'package:uni_roomie/screens/viewListings/singleListing.dart';
-
-import '../profile/profile.dart';
+import 'package:uni_roomie/models/ListingRecord.dart';
+import 'package:uni_roomie/screens/listing/ShowAllListingsOnMap.dart';
+import 'package:uni_roomie/screens/listing/ViewListingPage.dart';
 
 class Tag extends StatefulWidget {
   String text;
@@ -36,39 +35,32 @@ class _Tag extends State<Tag> {
   }
 }
 
-class Listing extends StatefulWidget {
-  String img;
-  String title;
-  double distance; //in miles
-  int rooms;
-  int price;
-  String genderPreference;
-
-  Listing(this.img, this.title, this.distance, this.rooms, this.price, this.genderPreference);
-class ViewListingsPage extends StatefulWidget {
+class SearchListingsResultsPage extends StatefulWidget {
   final int minPrice;
   final int maxPrice;
   final int minDistance;
   final int maxDistance;
   final int roomsAvailable;
   final int totalRooms;
+  List<ListingRecord> masterListings;
 
-  ViewListingsPage(
+  SearchListingsResultsPage(
       {Key key,
-        this.minPrice,
-        this.maxPrice,
-        this.minDistance,
-        this.maxDistance,
-        this.roomsAvailable,
-        this.totalRooms})
+      this.minPrice,
+      this.maxPrice,
+      this.minDistance,
+      this.maxDistance,
+      this.roomsAvailable,
+      this.totalRooms})
       : super(key: key);
 
   @override
-  _ViewListingsPageState createState() => _ViewListingsPageState(
-      minPrice, maxPrice, minDistance, maxDistance, roomsAvailable, totalRooms);
+  _SearchListingsResultsPageState createState() =>
+      _SearchListingsResultsPageState(minPrice, maxPrice, minDistance,
+          maxDistance, roomsAvailable, totalRooms);
 }
 
-class _ViewListingsPageState extends State<ViewListingsPage> {
+class _SearchListingsResultsPageState extends State<SearchListingsResultsPage> {
   final int minPrice;
   final int maxPrice;
   final int minDistance;
@@ -76,8 +68,8 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
   final int roomsAvailable;
   final int totalRooms;
 
-  _ViewListingsPageState(this.minPrice, this.maxPrice, this.minDistance,
-      this.maxDistance, this.roomsAvailable, this.totalRooms);
+  _SearchListingsResultsPageState(this.minPrice, this.maxPrice,
+      this.minDistance, this.maxDistance, this.roomsAvailable, this.totalRooms);
 
   @override
   Widget build(BuildContext context) {
@@ -88,10 +80,21 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
         centerTitle: true,
       ),
       body: _buildBody(context),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (widget.masterListings == null || widget.masterListings.length < 1) return;
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    ShowAllListingsOnMapPage(widget.masterListings)),
+          );
+        },
+        child: Icon(Icons.map),
+      ),
     );
   }
-
-  List<QueryDocumentSnapshot> filter(String title) {}
 
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -103,20 +106,41 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
 
-        List<Listing> listings =
-        snapshot.data.docs.map((e) => Listing.fromSnapshot(e)).toList();
+        List<ListingRecord> listings = snapshot.data.docs
+            .map((e) => ListingRecord.fromSnapshot(e))
+            .toList();
 
         listings = listings
             .where((e) =>
-        e.totalRooms <= totalRooms && e.freeRooms <= roomsAvailable)
+                e.totalRooms <= totalRooms &&
+                e.freeRooms <= roomsAvailable &&
+                e.freeRooms > 0)
             .toList();
+
+
+        widget.masterListings = listings;
+
+        if (listings.isEmpty) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Text(
+                  "There are no listings that meet your requirements.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+              ],
+            ),
+          );
+        }
 
         return _buildList(context, listings);
       },
     );
   }
 
-  Widget _buildList(BuildContext context, List<Listing> listings) {
+  Widget _buildList(BuildContext context, List<ListingRecord> listings) {
     return ListView(
       padding: const EdgeInsets.only(top: 20.0),
       children: listings
@@ -125,7 +149,7 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
     );
   }
 
-  Widget _buildListItem(BuildContext context, Listing listingRecord) {
+  Widget _buildListItem(BuildContext context, ListingRecord listingRecord) {
     return Padding(
         padding: const EdgeInsets.all(5.0),
         child: InkWell(
@@ -134,7 +158,8 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
             {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SingleListingPage(listingRecord)),
+                MaterialPageRoute(
+                    builder: (context) => ViewListingPage(listingRecord)),
               );
             }
           },
@@ -152,8 +177,7 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                            image: NetworkImage(
-                                "https://www.accommodationengine.co.uk/imagecache/750/450/storage/galleries/bC3fWJ/Student_Accommodation_Birmingham_Bentley_House_1.jpg"),
+                            image: NetworkImage(listingRecord.photoURLs.first),
                             fit: BoxFit.fill),
                       ),
                     ),
@@ -177,9 +201,13 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
                         ),
                         Row(
                           children: [
-                            Tag("Male", Colors.red),
-                            Tag("${listingRecord.totalRooms} Bedroom House",
-                                Colors.blue),
+                            Tag(
+                                listingRecord.genderPreference
+                                    .toString()
+                                    .split(".")[1]
+                                    .replaceAll(
+                                        "NoPreference", "No Preference"),
+                                Colors.red),
                             Tag("${listingRecord.freeRooms} Free Rooms",
                                 Colors.blue),
                           ],
