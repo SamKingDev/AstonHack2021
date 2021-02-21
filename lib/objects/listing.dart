@@ -9,6 +9,7 @@ class Listing {
   Gender genderPreference;
   List<dynamic> photoURLs;
   DocumentReference reference;
+  CollectionReference requestCollection;
   DocumentReference userReference;
 
   Listing(this.title, this.geoPoint, this.pricePerWeek, this.totalRooms,
@@ -23,6 +24,7 @@ class Listing {
     this.genderPreference = Gender.values.firstWhere((e) => e.toString() == "Gender." + map["genderPreference"]);
     this.photoURLs = map["photoURLs"];
     this.userReference = map["owner"];
+    this.requestCollection = map["requests"];
   }
 
   Listing.fromSnapshot(DocumentSnapshot snapshot)

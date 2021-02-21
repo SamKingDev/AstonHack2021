@@ -82,8 +82,6 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
     );
   }
 
-  List<QueryDocumentSnapshot> filter(String title) {}
-
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
@@ -125,7 +123,8 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
             {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SingleListingPage(listingRecord)),
+                MaterialPageRoute(
+                    builder: (context) => SingleListingPage(listingRecord)),
               );
             }
           },
