@@ -7,10 +7,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:uni_roomie/blocs/auth_bloc.dart';
+import 'package:uni_roomie/blocs/AuthBloc.dart';
 import 'package:uni_roomie/customtiles/CustomTile.dart';
-import 'package:uni_roomie/screens/login/login.dart';
-import 'package:uni_roomie/screens/profile/editProfile.dart';
+import 'package:uni_roomie/screens/login/LoginPage.dart';
+import 'package:uni_roomie/screens/profile/EditProfilePage.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -56,13 +56,15 @@ class _ProfilePageState extends State<ProfilePage> {
             gender = event.data()["gender"];
             age = event.data()["age"];
             university = event.data()["university"];
-            if (university != null ) university.get().then((value) => setState(() {
-                  universityName = value.data()["name"];
-                }));
+            if (university != null)
+              university.get().then((value) => setState(() {
+                    universityName = value.data()["name"];
+                  }));
             course = event.data()["course"];
-            if (course != null ) course.get().then((value) => setState(() {
-                  courseName = value.data()["name"];
-                }));
+            if (course != null)
+              course.get().then((value) => setState(() {
+                    courseName = value.data()["name"];
+                  }));
             yearOfStudy = event.data()["yearOfStudy"];
             profilePhoto = event.data()["profilePhoto"];
             print(profilePhoto);
@@ -79,14 +81,16 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
-        UploadTask uploadTask =
-            FirebaseStorage.instance.ref('profilePhotos/$userId.png').putFile(_image);
+        UploadTask uploadTask = FirebaseStorage.instance
+            .ref('profilePhotos/$userId.png')
+            .putFile(_image);
         uploadTask.then((snapshot) => {
-              snapshot.ref
-                  .getDownloadURL()
-                  .then((value) => {
-                    FirebaseFirestore.instance.collection("users").doc(userId).update({"profilePhoto": value})
-              })
+              snapshot.ref.getDownloadURL().then((value) => {
+                    FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(userId)
+                        .update({"profilePhoto": value})
+                  })
             });
       } else {
         print('No image selected.');
@@ -139,7 +143,6 @@ class _ProfilePageState extends State<ProfilePage> {
             Container(
               padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
                 color: new Color.fromRGBO(180, 190, 201, 1),
               ),
               child: Container(
@@ -189,15 +192,15 @@ class _ProfilePageState extends State<ProfilePage> {
           margin: EdgeInsets.all(20),
           padding: EdgeInsets.all(20),
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-              color: new Color.fromRGBO(180, 190, 201, 1),
-              // set border width
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              // set rounded corner radius
-              boxShadow: [
-                BoxShadow(
-                    blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
-              ]),
+          // decoration: BoxDecoration(
+          //     color: new Color.fromRGBO(180, 190, 201, 1),
+          //     // set border width
+          //     borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          //     // set rounded corner radius
+          //     boxShadow: [
+          //       BoxShadow(
+          //           blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
+          //     ]),
           child: Column(
             children: [
               Container(
@@ -238,10 +241,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: RaisedButton(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18.0)),
-                  onPressed: () {Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => EditProfilePage()),
-                  );},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditProfilePage()),
+                    );
+                  },
                   color: new Color.fromRGBO(249, 89, 89, 1),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),

@@ -5,27 +5,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:uni_roomie/blocs/auth_bloc.dart';
+import 'package:uni_roomie/blocs/AuthBloc.dart';
 import 'package:uni_roomie/customtiles/CustomTile.dart';
-import 'package:uni_roomie/objects/listing.dart';
-import 'package:uni_roomie/screens/login/login.dart';
-import 'package:google_map_location_picker/google_map_location_picker.dart';
+import 'package:uni_roomie/models/ListingRecord.dart';
+import 'package:uni_roomie/screens/login/LoginPage.dart';
 
 //Divider - > Container(height: 100, child: Divider(color: Colors.black))
 
-class createListingPage extends StatefulWidget {
+class CreateListingPage extends StatefulWidget {
   TextEditingController titleCont = new TextEditingController();
   TextEditingController priceCont = new TextEditingController();
   TextEditingController totalRoomsCont = new TextEditingController();
   TextEditingController freeRoomsCont = new TextEditingController();
   LocationResult result;
+
   @override
-  _createListingPageState createState() => _createListingPageState();
+  _CreateListingPageState createState() => _CreateListingPageState();
 }
 
-class _createListingPageState extends State<createListingPage> {
+class _CreateListingPageState extends State<CreateListingPage> {
   StreamSubscription<User> loginStateSubscription;
   DocumentReference userReference;
 
@@ -83,22 +84,23 @@ class _createListingPageState extends State<createListingPage> {
                   margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   padding: EdgeInsets.all(20),
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: new Color.fromRGBO(217, 217, 217, 1),
-                      // set border width
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      // set rounded corner radius
-                      boxShadow: [
-                        BoxShadow(
-                            blurRadius: 10,
-                            color: Colors.black,
-                            offset: Offset(1, 3))
-                      ]),
+                  // decoration: BoxDecoration(
+                  //     color: new Color.fromRGBO(217, 217, 217, 1),
+                  //     // set border width
+                  //     borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  //     // set rounded corner radius
+                  //     boxShadow: [
+                  //       BoxShadow(
+                  //           blurRadius: 10,
+                  //           color: Colors.black,
+                  //           offset: Offset(1, 3))
+                  //     ]),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      textContainer('Title...', 'Listing Title', widget.titleCont),
+                      textContainer(
+                          'Title...', 'Listing Title', widget.titleCont),
                       SizedBox(height: 50),
                       Container(
                         padding:
@@ -109,7 +111,8 @@ class _createListingPageState extends State<createListingPage> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(18.0)),
                               onPressed: () async {
-                                widget.result = await showLocationPicker(context,
+                                widget.result = await showLocationPicker(
+                                    context,
                                     "AIzaSyDY6RwTm0Dhr7YMs_jLi6B8fwqhTyCqzJw");
                                 if (widget.result != null) {
                                   setState(() {
@@ -164,7 +167,8 @@ class _createListingPageState extends State<createListingPage> {
                       SizedBox(
                         height: 30,
                       ),
-                      numberContainer('Price...', 'Price Per Week', widget.priceCont),
+                      numberContainer(
+                          'Price...', 'Price Per Week', widget.priceCont),
                       SizedBox(
                         height: 50,
                       ),
@@ -256,7 +260,7 @@ class _createListingPageState extends State<createListingPage> {
                               }
 
                               void insertRow() async {
-                                Listing listing = new Listing(
+                                ListingRecord listing = new ListingRecord(
                                     widget.titleCont.text,
                                     new GeoPoint(widget.result.latLng.latitude,
                                         widget.result.latLng.longitude),

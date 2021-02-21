@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uni_roomie/blocs/auth_bloc.dart';
-
-import 'package:uni_roomie/screens/profile/profile.dart';
+import 'package:uni_roomie/blocs/AuthBloc.dart';
+import 'package:uni_roomie/screens/profile/ProfilePage.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -35,6 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     loginStateSubscription.cancel();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final authBloc = Provider.of<AuthBloc>(context);
@@ -58,7 +58,9 @@ class _LoginPageState extends State<LoginPage> {
             child: RaisedButton(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0)),
-              onPressed: () {authBloc.loginGoogle();},
+              onPressed: () {
+                authBloc.loginGoogle();
+              },
               color: new Color.fromRGBO(249, 89, 89, 1),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
