@@ -38,6 +38,7 @@ dependencies:
   google_maps_flutter: ^0.5.30
   google_map_location_picker: ^3.3.4
   carousel_slider: ^3.0.0
+  geolocator: ^5.2.0
   flutter_localizations:
     sdk: flutter
 
