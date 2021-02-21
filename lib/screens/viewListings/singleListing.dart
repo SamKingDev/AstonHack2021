@@ -1,12 +1,24 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_roomie/blocs/auth_bloc.dart';
 import 'package:uni_roomie/objects/listing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uni_roomie/screens/chats/ChatRecord.dart';
+import 'package:uni_roomie/screens/chats/UserRecord.dart';
+import 'package:uni_roomie/screens/chats/ViewChatPage.dart';
+import 'package:uni_roomie/screens/login/login.dart';
 import 'package:uni_roomie/screens/profile/viewOtherProfile.dart';
 
 class SingleListingPage extends StatefulWidget {
+  StreamSubscription<User> loginStateSubscription;
   Listing listing;
   String userName;
+  DocumentReference userReference;
+  UserRecord otherUser;
 
   SingleListingPage(this.listing);
 
@@ -17,12 +29,29 @@ class SingleListingPage extends StatefulWidget {
 class _SingleListingPageState extends State<SingleListingPage> {
   @override
   void initState() {
+    var authBloc = Provider.of<AuthBloc>(context, listen: false);
+    widget.loginStateSubscription = authBloc.currentUser.listen((fbUser) {
+      if (fbUser == null) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => LoginPage(),
+          ),
+        );
+      } else {
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc(fbUser.uid)
+            .get()
+            .then((value) => widget.userReference = value.reference);
+      }
+    });
     if (widget.listing != null && widget.listing.userReference != null)
       FirebaseFirestore.instance
           .collection("users")
           .doc(widget.listing.userReference.id)
           .get()
           .then((value) => setState(() {
+                widget.otherUser = new UserRecord.fromSnapshot(value);
                 widget.userName = value.data()["full_name"];
               }));
   }
@@ -172,7 +201,36 @@ class _SingleListingPageState extends State<SingleListingPage> {
               child: RaisedButton(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0)),
-                onPressed: () => {},
+                onPressed: () => {
+                  FirebaseFirestore.instance.collection("chats").add({
+                    "user1": widget.userReference,
+                    "user2": widget.listing.userReference
+                  }).then((value) {
+                    FirebaseFirestore.instance
+                        .collection("chats")
+                        .doc(value.id)
+                        .collection("messages")
+                        .add({
+                      "content":
+                          "Hello, I'm interested in this listing! Please can I get more info",
+                      "sender": widget.userReference,
+                      "timestamp": Timestamp.now()
+                    }).then((message) =>
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ViewChatPage(
+                                chatRecord: ChatRecord.fromMap({
+                                  "user1": widget.userReference,
+                                  "user2": widget.listing.userReference,
+                                  "messages": message.parent
+                                }, reference: value),
+                                otherUser: widget.otherUser),
+                          ),
+                        )
+                    );
+                  })
+                },
                 color: Colors.lightBlueAccent,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -201,7 +259,9 @@ class _SingleListingPageState extends State<SingleListingPage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => viewOtherProfilePage(widget.listing.userReference.id)),
+                    MaterialPageRoute(
+                        builder: (context) => viewOtherProfilePage(
+                            widget.listing.userReference.id)),
                   );
                 },
                 color: Colors.lightBlueAccent,
