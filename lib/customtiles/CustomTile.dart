@@ -137,11 +137,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               () => {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ListingRequestsPage()),
-                      MaterialPageRoute(
-                          builder: (context) => listingRequests()),
-                    )
-                  }),
+                      MaterialPageRoute(builder: (context) => ListingRequestsPage()))}),
           CustomDrawerTile(
               Icons.message,
               'Chats',
