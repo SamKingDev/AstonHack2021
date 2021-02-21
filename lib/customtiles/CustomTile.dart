@@ -7,7 +7,7 @@ import 'package:uni_roomie/screens/login/login.dart';
 import 'package:uni_roomie/screens/profile/profile.dart';
 import 'package:uni_roomie/screens/searchListing/viewListing.dart';
 import 'package:uni_roomie/screens/viewListings/viewListings.dart';
-import 'package:uni_roomie/screens/listingRequests/listingRequests.dart';
+import 'package:uni_roomie/screens/listingRequests/ListingRequestsPage.dart';
 
 class CustomDrawerTile extends StatefulWidget {
   IconData icon;
@@ -137,10 +137,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               () => {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => listingRequests()),
-                    )
-                  }),
+                      MaterialPageRoute(builder: (context) => ListingRequestsPage()))}),
           CustomDrawerTile(
               Icons.message,
               'Chats',

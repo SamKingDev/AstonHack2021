@@ -176,7 +176,12 @@ class _SingleListingPageState extends State<SingleListingPage> {
               child: RaisedButton(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0)),
-                onPressed: () => {},
+                onPressed: () => {
+                  widget.listing.reference.collection("requests").add({
+                    "status": "requested",
+                    "user": widget.userReference,
+                  })
+                },
                 color: Colors.greenAccent.shade400,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -216,20 +221,18 @@ class _SingleListingPageState extends State<SingleListingPage> {
                           "Hello, I'm interested in this listing! Please can I get more info",
                       "sender": widget.userReference,
                       "timestamp": Timestamp.now()
-                    }).then((message) =>
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ViewChatPage(
-                                chatRecord: ChatRecord.fromMap({
-                                  "user1": widget.userReference,
-                                  "user2": widget.listing.userReference,
-                                  "messages": message.parent
-                                }, reference: value),
-                                otherUser: widget.otherUser),
-                          ),
-                        )
-                    );
+                    }).then((message) => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ViewChatPage(
+                                    chatRecord: ChatRecord.fromMap({
+                                      "user1": widget.userReference,
+                                      "user2": widget.listing.userReference,
+                                      "messages": message.parent
+                                    }, reference: value),
+                                    otherUser: widget.otherUser),
+                              ),
+                            ));
                   })
                 },
                 color: Colors.lightBlueAccent,

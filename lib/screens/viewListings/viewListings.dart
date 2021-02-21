@@ -48,12 +48,12 @@ class ViewListingsPage extends StatefulWidget {
 
   ViewListingsPage(
       {Key key,
-        this.minPrice,
-        this.maxPrice,
-        this.minDistance,
-        this.maxDistance,
-        this.roomsAvailable,
-        this.totalRooms})
+      this.minPrice,
+      this.maxPrice,
+      this.minDistance,
+      this.maxDistance,
+      this.roomsAvailable,
+      this.totalRooms})
       : super(key: key);
 
   @override
@@ -105,11 +105,11 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
         if (!snapshot.hasData) return LinearProgressIndicator();
 
         List<Listing> listings =
-        snapshot.data.docs.map((e) => Listing.fromSnapshot(e)).toList();
+            snapshot.data.docs.map((e) => Listing.fromSnapshot(e)).toList();
 
         listings = listings
             .where((e) =>
-        e.totalRooms <= totalRooms && e.freeRooms <= roomsAvailable)
+                e.totalRooms <= totalRooms && e.freeRooms <= roomsAvailable)
             .toList();
 
         widget.masterListings = listings;
