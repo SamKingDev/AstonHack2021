@@ -138,6 +138,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => ListingRequestsPage()),
+                      MaterialPageRoute(
+                          builder: (context) => listingRequests()),
                     )
                   }),
           CustomDrawerTile(
@@ -275,6 +277,9 @@ class EditProfileList extends StatefulWidget {
 class _EditProfileListState extends State<EditProfileList> {
   @override
   Widget build(BuildContext context) {
+    widget.selectedValue = widget.selectedValue == null
+        ? (widget.values.length == 0 ? null : widget.values.keys.first)
+        : widget.selectedValue;
     if (widget.values == null) return Container();
     List<DropdownMenuItem<String>> items = new List<DropdownMenuItem<String>>();
     widget.values.forEach((key, value) {
@@ -307,7 +312,6 @@ class _EditProfileListState extends State<EditProfileList> {
             onChanged: (String newValue) {
               setState(() {
                 widget.selectedValue = newValue;
-                print(widget.selectedValue);
               });
             },
             items: items,
