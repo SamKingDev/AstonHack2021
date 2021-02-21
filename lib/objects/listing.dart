@@ -23,6 +23,7 @@ class Listing {
     this.freeRooms = map["freeRooms"];
     this.genderPreference = Gender.values.firstWhere((e) => e.toString() == "Gender." + map["genderPreference"]);
     this.photoURLs = map["photoURLs"];
+    this.userReference = map["owner"];
     this.requestCollection = map["requests"];
   }
 
