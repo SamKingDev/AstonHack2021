@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_roomie/screens/viewListings/viewListings.dart';
+import 'package:expandable/expandable.dart';
 
 class Request extends StatefulWidget {
   String img;
@@ -49,7 +50,6 @@ class _Request extends State<Request> {
                           children: [
                             Tag("Male", Colors.red),
                             Tag("Year 2", Colors.blue)
-
                           ],
                         ),
                         SizedBox(
@@ -60,11 +60,8 @@ class _Request extends State<Request> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text("View Profile")
-                      ],
+                      children: [Text("View Profile")],
                     ),
-
                   ],
                 ),
               ),
@@ -90,15 +87,113 @@ class listingRequests extends StatefulWidget {
 }
 
 class _listingRequestsState extends State<listingRequests> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('View Requests'), centerTitle: true),
+      body: ExpandableTheme(
+        data: const ExpandableThemeData(
+          iconColor: Colors.blue,
+          useInkWell: true,
+        ),
+        child: ListView(
+          physics: const BouncingScrollPhysics(),
+          children: <Widget>[
+            RequestCard(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RequestCard extends StatelessWidget {
   String tmpImage =
       "https://www.accommodationengine.co.uk/imagecache/750/450/storage/galleries/bC3fWJ/Student_Accommodation_Birmingham_Bentley_House_1.jpg";
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text('View Requests'), centerTitle: true),
-        body: SingleChildScrollView(
-          child: Request(tmpImage, "Bob"),
-        ));
+    return ExpandableNotifier(
+      // <-- Provides ExpandableController to its children
+      child: Column(
+        children: [
+          ScrollOnExpand(
+            scrollOnExpand: true,
+            scrollOnCollapse: false,
+            child: ExpandablePanel(
+              hasIcon: false,
+              header: Request(tmpImage, "Bob"),
+              // <-- Driven by ExpandableController from ExpandableNotifier
+              collapsed: Container(),
+              expanded: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0)),
+                    onPressed: null,
+                    color: new Color.fromRGBO(249, 89, 89, 1),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Accept',
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0)),
+                    onPressed: null,
+                    color: new Color.fromRGBO(249, 89, 89, 1),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Delete',
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0)),
+                    onPressed: null,
+                    color: new Color.fromRGBO(249, 89, 89, 1),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Messsage',
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
