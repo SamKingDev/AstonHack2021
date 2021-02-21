@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:uni_roomie/objects/listing.dart';
 
 class SingleListingPage extends StatefulWidget {
+  Listing listing;
+
+  SingleListingPage(this.listing);
+
   @override
   _SingleListingPageState createState() => _SingleListingPageState();
 }
