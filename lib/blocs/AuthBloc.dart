@@ -1,7 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uni_roomie/services/auth_service.dart';
+import 'package:uni_roomie/services/AuthService.dart';
 
 class AuthBloc {
   final authService = AuthService();
@@ -27,7 +27,8 @@ class AuthBloc {
       final user = await users.doc(result.user.uid).get();
 
       if (user == null || !user.exists) {
-        users.doc(result.user.uid)
+        users
+            .doc(result.user.uid)
             .set({
               'full_name': result.user.displayName, // John Doe
               'email': result.user.email,

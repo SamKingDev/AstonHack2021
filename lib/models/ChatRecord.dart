@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatRecord {
-  // self
   final DocumentReference user1;
   final DocumentReference user2;
   final CollectionReference messages;
