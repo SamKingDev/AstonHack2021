@@ -59,13 +59,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
             age = event.data()["age"];
             ageController.text = age.toString();
             university = event.data()["university"];
-            university.get().then((value) => setState(() {
-                  universityName = value.id;
-                }));
+            if (university != null)
+              university.get().then((value) => setState(() {
+                    universityName = value.id;
+                  }));
+            else
+              universityName == null;
             course = event.data()["course"];
-            course.get().then((value) => setState(() {
-                  courseName = value.id;
-                }));
+            if (course != null)
+              course.get().then((value) => setState(() {
+                    courseName = value.id;
+                  }));
+            else
+              courseName = null;
             yearOfStudy = event.data()["yearOfStudy"];
             yearOfStudyController.text = yearOfStudy.toString();
             profilePhoto = event.data()["profilePhoto"];
@@ -76,21 +82,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
             .orderBy("name")
             .get()
             .then((results) {
-                  courseDocumentSnapshot = results.docs;
-                  results.docs.forEach((element) {
-                    courses.putIfAbsent(element.id, () => element["name"]);
-                  });
-                });
+          courseDocumentSnapshot = results.docs;
+          results.docs.forEach((element) {
+            setState(() {
+              courses.putIfAbsent(element.id, () => element["name"]);
+            });
+          });
+        });
         FirebaseFirestore.instance
             .collection('universities')
             .orderBy("name")
             .get()
             .then((results) {
-                  universityDocumentSnapshots = results.docs;
-                  results.docs.forEach((element) {
-                    universities.putIfAbsent(element.id, () => element["name"]);
-                  });
-                });
+          universityDocumentSnapshots = results.docs;
+          results.docs.forEach((element) {
+            setState(() {
+              universities.putIfAbsent(element.id, () => element["name"]);
+            });
+          });
+        });
       }
     });
     super.initState();
@@ -108,7 +118,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
         Icons.school, 'University', universities, universityName);
     EditProfileList courseProfile =
         EditProfileList(Icons.school, 'Course', courses, courseName);
-    EditProfileList genderProfile = EditProfileList(Icons.person, 'Gender', genders, gender);
+    EditProfileList genderProfile =
+        EditProfileList(Icons.person, 'Gender', genders, gender);
     return Scaffold(
       drawer: CustomDrawer(authBloc),
       appBar: AppBar(
@@ -190,10 +201,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         .doc(userId)
                         .update({
                       "age": int.parse(ageController.text),
-                      "course": courseDocumentSnapshot.firstWhere((element) => element.id == courseProfile.selectedValue).reference,
+                      "course": courseDocumentSnapshot
+                          .firstWhere((element) =>
+                              element.id == courseProfile.selectedValue)
+                          .reference,
                       "full_name": nameController.text,
                       "gender": genderProfile.selectedValue,
-                      "university": universityDocumentSnapshots.firstWhere((element) => element.id == universityProfile.selectedValue).reference,
+                      "university": universityDocumentSnapshots
+                          .firstWhere((element) =>
+                              element.id == universityProfile.selectedValue)
+                          .reference,
                       "yearOfStudy": int.parse(yearOfStudyController.text)
                     });
                     Navigator.push(
