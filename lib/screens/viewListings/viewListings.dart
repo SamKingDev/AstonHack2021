@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_roomie/objects/listing.dart';
+import 'package:uni_roomie/screens/viewListings/showAllListings.dart';
 import 'package:uni_roomie/screens/viewListings/singleListing.dart';
 
 import '../profile/profile.dart';
@@ -43,6 +44,7 @@ class ViewListingsPage extends StatefulWidget {
   final int maxDistance;
   final int roomsAvailable;
   final int totalRooms;
+  List<Listing> masterListings;
 
   ViewListingsPage(
       {Key key,
@@ -79,6 +81,16 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
         centerTitle: true,
       ),
       body: _buildBody(context),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ShowAllListings(widget.masterListings)),
+          );
+        },
+        child: Icon(Icons.map),
+      ),
     );
   }
 
@@ -99,6 +111,8 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
             .where((e) =>
         e.totalRooms <= totalRooms && e.freeRooms <= roomsAvailable)
             .toList();
+
+        widget.masterListings = listings;
 
         return _buildList(context, listings);
       },
