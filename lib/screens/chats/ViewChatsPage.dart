@@ -40,7 +40,7 @@ class _ViewChatsPageState extends State<ViewChatsPage> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
 
-        List<ChatRecord> userRecords = snapshot.data.docs.map((e) => ChatRecord.fromSnapshot(e)).toList();;
+        List<ChatRecord> userRecords = snapshot.data.docs.map((e) => ChatRecord.fromSnapshot(e)).toList();
 
         return _buildList(context, userRecords.where((e) => e.user1 == userReference || e.user2 == userReference).toList());
       },
