@@ -1,21 +1,22 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:uni_roomie/objects/listing.dart';
-import 'package:uni_roomie/screens/viewListings/singleListing.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:uni_roomie/models/ListingRecord.dart';
+import 'package:uni_roomie/screens/listing/ViewListingPage.dart';
 
-class ShowAllListings extends StatefulWidget {
-  List<Listing> listings;
+class ShowAllListingsOnMapPage extends StatefulWidget {
+  List<ListingRecord> listings;
 
-  ShowAllListings(this.listings);
+  ShowAllListingsOnMapPage(this.listings);
 
   @override
-  _ShowAllListingsState createState() => _ShowAllListingsState();
+  _ShowAllListingsOnMapPageState createState() =>
+      _ShowAllListingsOnMapPageState();
 }
 
-class _ShowAllListingsState extends State<ShowAllListings> {
+class _ShowAllListingsOnMapPageState extends State<ShowAllListingsOnMapPage> {
   Completer<GoogleMapController> _controller = Completer();
   Position _currentPosition;
 
@@ -43,7 +44,7 @@ class _ShowAllListingsState extends State<ShowAllListings> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => SingleListingPage(element)),
+                      builder: (context) => ViewListingPage(element)),
                 );
               }));
     });
@@ -51,8 +52,12 @@ class _ShowAllListingsState extends State<ShowAllListings> {
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
             target: LatLng(
-                _currentPosition != null ? _currentPosition.latitude : widget.listings.first.geoPoint.latitude,
-                _currentPosition != null ? _currentPosition.longitude : widget.listings.first.geoPoint.longitude),
+                _currentPosition != null
+                    ? _currentPosition.latitude
+                    : widget.listings.first.geoPoint.latitude,
+                _currentPosition != null
+                    ? _currentPosition.longitude
+                    : widget.listings.first.geoPoint.longitude),
             zoom: 12.5),
         mapType: MapType.normal,
         onMapCreated: (GoogleMapController controller) {

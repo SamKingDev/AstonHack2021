@@ -3,17 +3,17 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uni_roomie/blocs/auth_bloc.dart';
+import 'package:uni_roomie/blocs/AuthBloc.dart';
 import 'package:uni_roomie/customtiles/CustomTile.dart';
-import 'package:uni_roomie/screens/login/login.dart';
-import 'package:uni_roomie/screens/viewListings/viewListings.dart';
+import 'package:uni_roomie/screens/listing/SearchListingsResultsPage.dart';
+import 'package:uni_roomie/screens/login/LoginPage.dart';
 
-class viewListingPage extends StatefulWidget {
+class SearchListingsPage extends StatefulWidget {
   @override
-  _viewListingPageState createState() => _viewListingPageState();
+  _SearchListingsPageState createState() => _SearchListingsPageState();
 }
 
-class _viewListingPageState extends State<viewListingPage> {
+class _SearchListingsPageState extends State<SearchListingsPage> {
   StreamSubscription<User> loginStateSubscription;
   String university;
   RangeValues _priceRangeValues = const RangeValues(50, 450);
@@ -63,17 +63,12 @@ class _viewListingPageState extends State<viewListingPage> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.all(15),
             alignment: Alignment.center,
             decoration: BoxDecoration(
-                color: new Color.fromRGBO(180, 190, 201, 1),
-                // set border width
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                // set rounded corner radius
-                boxShadow: [
-                  BoxShadow(
-                      blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
-                ]),
+              color: Colors.black12,
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+            ),
             child: Column(
               children: [
                 Row(
@@ -104,17 +99,12 @@ class _viewListingPageState extends State<viewListingPage> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.all(15),
             alignment: Alignment.center,
             decoration: BoxDecoration(
-                color: new Color.fromRGBO(180, 190, 201, 1),
-                // set border width
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                // set rounded corner radius
-                boxShadow: [
-                  BoxShadow(
-                      blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
-                ]),
+              color: Colors.black12,
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+            ),
             child: Column(
               children: [
                 Row(
@@ -144,17 +134,12 @@ class _viewListingPageState extends State<viewListingPage> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.all(15),
             alignment: Alignment.center,
             decoration: BoxDecoration(
-                color: new Color.fromRGBO(180, 190, 201, 1),
-                // set border width
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                // set rounded corner radius
-                boxShadow: [
-                  BoxShadow(
-                      blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
-                ]),
+              color: Colors.black12,
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+            ),
             child: Row(
               children: [
                 Text('Max Rooms Available:'),
@@ -185,17 +170,12 @@ class _viewListingPageState extends State<viewListingPage> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.all(15),
             alignment: Alignment.center,
             decoration: BoxDecoration(
-                color: new Color.fromRGBO(180, 190, 201, 1),
-                // set border width
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                // set rounded corner radius
-                boxShadow: [
-                  BoxShadow(
-                      blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
-                ]),
+              color: Colors.black12,
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+            ),
             child: Row(
               children: [
                 Text('Max Total Rooms:'),
@@ -236,19 +216,24 @@ class _viewListingPageState extends State<viewListingPage> {
                 int minDistance = _distanceRangeValues.start.toInt();
                 int maxDistance = _distanceRangeValues.end.toInt();
 
-                int roomsAvailable = _roomsAvailableController.text.isEmpty ? 0 : int.parse(_roomsAvailableController.text);
-                int totalRooms = _totalRoomsController.text.isEmpty ? 0 : int.parse(_totalRoomsController.text);
+                int roomsAvailable = _roomsAvailableController.text.isEmpty
+                    ? 0
+                    : int.parse(_roomsAvailableController.text);
+                int totalRooms = _totalRoomsController.text.isEmpty
+                    ? 0
+                    : int.parse(_totalRoomsController.text);
 
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ViewListingsPage(
-                    minPrice: minPrice,
-                    maxPrice: maxPrice,
-                    minDistance: minDistance,
-                    maxDistance: maxDistance,
-                    roomsAvailable: roomsAvailable,
-                    totalRooms: totalRooms,
-                  )),
+                  MaterialPageRoute(
+                      builder: (context) => SearchListingsResultsPage(
+                            minPrice: minPrice,
+                            maxPrice: maxPrice,
+                            minDistance: minDistance,
+                            maxDistance: maxDistance,
+                            roomsAvailable: roomsAvailable,
+                            totalRooms: totalRooms,
+                          )),
                 );
               },
               color: new Color.fromRGBO(249, 89, 89, 1),
@@ -261,8 +246,6 @@ class _viewListingPageState extends State<viewListingPage> {
               ),
             ),
           ),
-          Container(),
-          Container(),
         ]),
       ),
     );

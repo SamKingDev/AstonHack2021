@@ -3,10 +3,11 @@ import 'package:expandable/expandable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:uni_roomie/objects/RequestRecord.dart';
-import 'package:uni_roomie/objects/listing.dart';
-import 'package:uni_roomie/screens/chats/UserRecord.dart';
-import 'package:uni_roomie/screens/viewListings/viewListings.dart';
+import 'package:uni_roomie/models/ListingRecord.dart';
+import 'package:uni_roomie/models/RequestRecord.dart';
+import 'package:uni_roomie/models/UserRecord.dart';
+
+import 'SearchListingsResultsPage.dart';
 
 class ListingRequestsPage extends StatefulWidget {
   @override
@@ -41,16 +42,62 @@ class _ListingRequestsPageState extends State<ListingRequestsPage> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
 
-        if (snapshot.data.docs.length == 0) return Text("No Listings.");
+        if (snapshot.data.docs.length == 0) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Text(
+                  "You do not have any active listings.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+              ],
+            ),
+          );
+        }
 
-        Listing listing = Listing.fromSnapshot(snapshot.data.docs.first);
+        ListingRecord listing =
+            ListingRecord.fromSnapshot(snapshot.data.docs.first);
+
+        if (listing.freeRooms <= 0) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Text(
+                  "Your listing has no free rooms left :D",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+              ],
+            ),
+          );
+        }
 
         return StreamBuilder<QuerySnapshot>(
-          stream: listing.reference.collection("requests").snapshots(),
+          stream: listing.reference
+              .collection("requests")
+              .limit(listing.freeRooms)
+              .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) return LinearProgressIndicator();
 
-            if (snapshot.data.docs.length == 0) return Text("No Requests.");
+            if (snapshot.data.docs.length == 0) {
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Text(
+                      "There are no new requests.",
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                  ],
+                ),
+              );
+            }
 
             List<RequestRecord> requestRecords = snapshot.data.docs
                 .map((e) => RequestRecord.fromSnapshot(e))
@@ -64,7 +111,7 @@ class _ListingRequestsPageState extends State<ListingRequestsPage> {
   }
 
   _buildList(BuildContext context, List<RequestRecord> requestRecords,
-      Listing listingRecord) {
+      ListingRecord listingRecord) {
     return ListView(
       padding: const EdgeInsets.only(top: 5.0),
       children: requestRecords
@@ -138,7 +185,7 @@ class _ListingRequestsPageState extends State<ListingRequestsPage> {
   }
 
   Widget _buildListItem(BuildContext context, RequestRecord requestRecord,
-      Listing listingRecord) {
+      ListingRecord listingRecord) {
     return FutureBuilder(
       future: getUserInfo(requestRecord.user),
       builder: (context, AsyncSnapshot<DocumentSnapshot> userSnapshot) {
@@ -165,6 +212,12 @@ class _ListingRequestsPageState extends State<ListingRequestsPage> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0)),
                           onPressed: () {
+                            listingRecord.reference.update({
+                              "freeRooms": listingRecord.freeRooms <= 0
+                                  ? 0
+                                  : FieldValue.increment(-1),
+                            });
+
                             requestRecord.reference.delete();
                           },
                           color: new Color.fromRGBO(249, 89, 89, 1),

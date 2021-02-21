@@ -1,33 +1,33 @@
 import 'dart:async';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uni_roomie/blocs/auth_bloc.dart';
-import 'package:uni_roomie/objects/listing.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uni_roomie/screens/chats/ChatRecord.dart';
-import 'package:uni_roomie/screens/chats/UserRecord.dart';
-import 'package:uni_roomie/screens/chats/ViewChatPage.dart';
-import 'package:uni_roomie/screens/login/login.dart';
-import 'package:uni_roomie/screens/profile/viewOtherProfile.dart';
-import 'package:uni_roomie/screens/viewListings/pinOnMap.dart';
+import 'package:uni_roomie/blocs/AuthBloc.dart';
+import 'package:uni_roomie/models/ChatRecord.dart';
+import 'package:uni_roomie/models/ListingRecord.dart';
+import 'package:uni_roomie/models/UserRecord.dart';
+import 'package:uni_roomie/screens/chat/ViewChatPage.dart';
+import 'package:uni_roomie/screens/listing/PinOnMapPage.dart';
+import 'package:uni_roomie/screens/login/LoginPage.dart';
+import 'package:uni_roomie/screens/profile/ViewOtherProfilePage.dart';
 
-class SingleListingPage extends StatefulWidget {
+class ViewListingPage extends StatefulWidget {
   StreamSubscription<User> loginStateSubscription;
-  Listing listing;
+  ListingRecord listing;
   String userName;
   DocumentReference userReference;
   UserRecord otherUser;
 
-  SingleListingPage(this.listing);
+  ViewListingPage(this.listing);
 
   @override
-  _SingleListingPageState createState() => _SingleListingPageState();
+  _ViewListingPageState createState() => _ViewListingPageState();
 }
 
-class _SingleListingPageState extends State<SingleListingPage> {
+class _ViewListingPageState extends State<ViewListingPage> {
   @override
   void initState() {
     var authBloc = Provider.of<AuthBloc>(context, listen: false);
@@ -264,7 +264,7 @@ class _SingleListingPageState extends State<SingleListingPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => viewOtherProfilePage(
+                        builder: (context) => ViewOtherProfilePage(
                             widget.listing.userReference.id)),
                   );
                 },
@@ -297,7 +297,8 @@ class _SingleListingPageState extends State<SingleListingPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => PinOnMap(widget.listing.geoPoint)),
+                        builder: (context) =>
+                            PinOnMapPage(widget.listing.geoPoint)),
                   );
                 },
                 color: Colors.lightBlueAccent,
