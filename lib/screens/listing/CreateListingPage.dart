@@ -85,17 +85,17 @@ class _CreateListingPageState extends State<CreateListingPage> {
                   margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   padding: EdgeInsets.all(20),
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: new Color.fromRGBO(217, 217, 217, 1),
-                      // set border width
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      // set rounded corner radius
-                      boxShadow: [
-                        BoxShadow(
-                            blurRadius: 10,
-                            color: Colors.black,
-                            offset: Offset(1, 3))
-                      ]),
+                  // decoration: BoxDecoration(
+                  //     color: new Color.fromRGBO(217, 217, 217, 1),
+                  //     // set border width
+                  //     borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  //     // set rounded corner radius
+                  //     boxShadow: [
+                  //       BoxShadow(
+                  //           blurRadius: 10,
+                  //           color: Colors.black,
+                  //           offset: Offset(1, 3))
+                  //     ]),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,

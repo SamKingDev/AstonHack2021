@@ -6,10 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_roomie/blocs/AuthBloc.dart';
-import 'package:uni_roomie/models/ChatRecord.dart';
 import 'package:uni_roomie/models/ListingRecord.dart';
 import 'package:uni_roomie/models/UserRecord.dart';
-import 'package:uni_roomie/screens/chat/ViewChatPage.dart';
+import 'package:uni_roomie/screens/helpers.dart';
 import 'package:uni_roomie/screens/listing/PinOnMapPage.dart';
 import 'package:uni_roomie/screens/login/LoginPage.dart';
 import 'package:uni_roomie/screens/profile/ViewOtherProfilePage.dart';
@@ -176,11 +175,21 @@ class _ViewListingPageState extends State<ViewListingPage> {
               child: RaisedButton(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0)),
-                onPressed: () => {
+                onPressed: () {
+                  DocumentReference userReference = getUserReference();
+
                   widget.listing.reference.collection("requests").add({
                     "status": "requested",
-                    "user": widget.userReference,
-                  })
+                    "user": userReference,
+                  });
+
+                  sendMessage(
+                    context,
+                    userReference,
+                    widget.listing.userReference,
+                    "Hello, I have requested to join your listing for ${widget.listing.title}.",
+                    true,
+                  );
                 },
                 color: Colors.greenAccent.shade400,
                 child: Padding(
@@ -207,34 +216,13 @@ class _ViewListingPageState extends State<ViewListingPage> {
               child: RaisedButton(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0)),
-                onPressed: () => {
-                  FirebaseFirestore.instance.collection("chats").add({
-                    "user1": widget.userReference,
-                    "user2": widget.listing.userReference
-                  }).then((value) {
-                    FirebaseFirestore.instance
-                        .collection("chats")
-                        .doc(value.id)
-                        .collection("messages")
-                        .add({
-                      "content":
-                          "Hello, I'm interested in this listing! Please can I get more info",
-                      "sender": widget.userReference,
-                      "timestamp": Timestamp.now()
-                    }).then((message) => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ViewChatPage(
-                                    chatRecord: ChatRecord.fromMap({
-                                      "user1": widget.userReference,
-                                      "user2": widget.listing.userReference,
-                                      "messages": message.parent
-                                    }, reference: value),
-                                    otherUser: widget.otherUser),
-                              ),
-                            ));
-                  })
-                },
+                onPressed: () => sendMessage(
+                  context,
+                  widget.userReference,
+                  widget.listing.userReference,
+                  "Hello, I'm interested in this listing! Please can I get more info.",
+                  true,
+                ),
                 color: Colors.lightBlueAccent,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),

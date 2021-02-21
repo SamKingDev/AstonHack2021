@@ -82,7 +82,7 @@ class _SearchListingsResultsPageState extends State<SearchListingsResultsPage> {
       body: _buildBody(context),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          if ((widget.masterListings ?? true) || widget.masterListings.length < 1) return;
+          if (widget.masterListings == null || widget.masterListings.length < 1) return;
 
           Navigator.push(
             context,
@@ -117,6 +117,9 @@ class _SearchListingsResultsPageState extends State<SearchListingsResultsPage> {
                 e.freeRooms > 0)
             .toList();
 
+
+        widget.masterListings = listings;
+
         if (listings.isEmpty) {
           return Padding(
             padding: const EdgeInsets.all(16.0),
@@ -131,8 +134,6 @@ class _SearchListingsResultsPageState extends State<SearchListingsResultsPage> {
             ),
           );
         }
-
-        widget.masterListings = listings;
 
         return _buildList(context, listings);
       },

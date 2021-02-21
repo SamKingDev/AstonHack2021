@@ -56,7 +56,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             nameController.text = fullName;
             email = event.data()["email"];
             gender = event.data()["gender"];
-            age = event.data()["age"];
+            age = event.data()["age"] ?? 20;
             ageController.text = age.toString();
             university = event.data()["university"];
             if (university != null)
@@ -72,7 +72,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   }));
             else
               courseName = null;
-            yearOfStudy = event.data()["yearOfStudy"];
+            yearOfStudy = event.data()["yearOfStudy"] ?? 1;
             yearOfStudyController.text = yearOfStudy.toString();
             profilePhoto = event.data()["profilePhoto"];
           });
@@ -134,7 +134,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Container(
               padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
                 color: new Color.fromRGBO(180, 190, 201, 1),
               ),
               child: Container(
@@ -154,15 +153,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
           margin: EdgeInsets.all(20),
           padding: EdgeInsets.all(20),
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-              color: new Color.fromRGBO(180, 190, 201, 1),
-              // set border width
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              // set rounded corner radius
-              boxShadow: [
-                BoxShadow(
-                    blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
-              ]),
+          // decoration: BoxDecoration(
+          //     color: new Color.fromRGBO(180, 190, 201, 1),
+          //     // set border width
+          //     borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          //     // set rounded corner radius
+          //     boxShadow: [
+          //       BoxShadow(
+          //           blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
+          //     ]),
           child: Column(
             children: [
               Container(

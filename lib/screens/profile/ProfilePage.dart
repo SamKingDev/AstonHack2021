@@ -143,7 +143,6 @@ class _ProfilePageState extends State<ProfilePage> {
             Container(
               padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
                 color: new Color.fromRGBO(180, 190, 201, 1),
               ),
               child: Container(
@@ -193,15 +192,15 @@ class _ProfilePageState extends State<ProfilePage> {
           margin: EdgeInsets.all(20),
           padding: EdgeInsets.all(20),
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-              color: new Color.fromRGBO(180, 190, 201, 1),
-              // set border width
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              // set rounded corner radius
-              boxShadow: [
-                BoxShadow(
-                    blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
-              ]),
+          // decoration: BoxDecoration(
+          //     color: new Color.fromRGBO(180, 190, 201, 1),
+          //     // set border width
+          //     borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          //     // set rounded corner radius
+          //     boxShadow: [
+          //       BoxShadow(
+          //           blurRadius: 10, color: Colors.black, offset: Offset(1, 3))
+          //     ]),
           child: Column(
             children: [
               Container(

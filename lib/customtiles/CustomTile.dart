@@ -5,6 +5,7 @@ import 'package:uni_roomie/screens/chat/ViewChatsPage.dart';
 import 'package:uni_roomie/screens/listing/CreateListingPage.dart';
 import 'package:uni_roomie/screens/listing/ListingRequestsPage.dart';
 import 'package:uni_roomie/screens/listing/SearchListingsPage.dart';
+import 'package:uni_roomie/screens/listing/SearchListingsResultsPage.dart';
 import 'package:uni_roomie/screens/profile/ProfilePage.dart';
 
 class CustomDrawerTile extends StatefulWidget {
@@ -121,7 +122,24 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   }),
           CustomDrawerTile(
               Icons.house,
-              'View Listings',
+              'All Listings',
+              () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SearchListingsResultsPage(
+                                minPrice: 0,
+                                maxPrice: 5000,
+                                minDistance: 0,
+                                maxDistance: 200,
+                                roomsAvailable: 50,
+                                totalRooms: 50,
+                              )),
+                    )
+                  }),
+          CustomDrawerTile(
+              Icons.search,
+              'Search Listings',
               () => {
                     Navigator.push(
                       context,
