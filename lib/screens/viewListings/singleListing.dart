@@ -38,25 +38,25 @@ class _SingleListingPageState extends State<SingleListingPage> {
 
             ),
             Container(
-              child: ListingInformationTile(Icons.house, 'Title:', '4 Bedroom Appartment'),
+              child: ListingInformationTile(Icons.house, 'Title:', widget.listing.title),
 
             ),
             Container(
-              child: ListingInformationTile(Icons.money, 'Price Per Week:', '£125'),
+              child: ListingInformationTile(Icons.money, 'Price Per Week:', '£${widget.listing.pricePerWeek}'),
             ),
             Container(
 
 
             ),
             Container(
-              child: ListingInformationTile(Icons.room, 'Rooms Available', '4'),
+              child: ListingInformationTile(Icons.room, 'Rooms Available', widget.listing.freeRooms.toString()),
             ),
             Container(
-                child: ListingInformationTile(Icons.person, 'User Name', 'User Profile Icon'),
+                child: ListingInformationTile(Icons.person, 'Owner\'s Name', 'User Profile Icon'),
             ),
             FittedBox(
               child: Container(
-                child: ListingInformationTile(Icons.group, 'Gender Preference', 'No Preference'),
+                child: ListingInformationTile(Icons.group, 'Gender Preference', widget.listing.genderPreference.toString().split(".")[1]),
               ),
             ),
           ]),
