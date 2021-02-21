@@ -1,13 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:uni_roomie/blocs/auth_bloc.dart';
-import 'package:uni_roomie/screens/chats/ViewChatsPage.dart';
-import 'package:uni_roomie/screens/createListing/createListing.dart';
-import 'package:uni_roomie/screens/login/login.dart';
-import 'package:uni_roomie/screens/profile/profile.dart';
-import 'package:uni_roomie/screens/searchListing/viewListing.dart';
-import 'package:uni_roomie/screens/viewListings/viewListings.dart';
-import 'package:uni_roomie/screens/listingRequests/ListingRequestsPage.dart';
+import 'package:uni_roomie/blocs/AuthBloc.dart';
+import 'package:uni_roomie/screens/chat/ViewChatsPage.dart';
+import 'package:uni_roomie/screens/listing/CreateListingPage.dart';
+import 'package:uni_roomie/screens/listing/ListingRequestsPage.dart';
+import 'package:uni_roomie/screens/listing/SearchListingsPage.dart';
+import 'package:uni_roomie/screens/profile/ProfilePage.dart';
 
 class CustomDrawerTile extends StatefulWidget {
   IconData icon;
@@ -118,7 +116,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => createListingPage()),
+                          builder: (context) => CreateListingPage()),
                     )
                   }),
           CustomDrawerTile(
@@ -128,7 +126,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => viewListingPage()),
+                          builder: (context) => SearchListingsPage()),
                     )
                   }),
           CustomDrawerTile(
@@ -136,8 +134,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
               'Listing Requests',
               () => {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ListingRequestsPage()))}),
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ListingRequestsPage()))
+                  }),
           CustomDrawerTile(
               Icons.message,
               'Chats',
