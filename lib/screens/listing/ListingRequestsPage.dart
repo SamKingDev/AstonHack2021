@@ -163,15 +163,15 @@ class _ListingRequestsPageState extends State<ListingRequestsPage> {
                       SizedBox(
                         height: 15,
                       ),
-                      Row(
-                        children: [
-                          SizedBox(width: 180),
-                          Icon(
-                            Icons.arrow_drop_down,
-                            size: 40,
-                          ),
-                        ],
-                      ),
+//                      Row(
+//                        children: [
+//                          SizedBox(width: 180),
+//                          Icon(
+//                            Icons.arrow_drop_down,
+//                            size: 40,
+//                          ),
+//                        ],
+//                      ),
                     ],
                   ),
                 ],
@@ -271,7 +271,7 @@ class _ListingRequestsPageState extends State<ListingRequestsPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Message Owner',
+                                  'Message Requester',
                                   style: TextStyle(fontSize: 15.0),
                                 ),
                               ],
