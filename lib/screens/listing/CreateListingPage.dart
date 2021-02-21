@@ -10,9 +10,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_roomie/blocs/AuthBloc.dart';
 import 'package:uni_roomie/customtiles/CustomTile.dart';
+import 'package:uni_roomie/models/ListingRecord.dart';
 import 'package:uni_roomie/screens/login/LoginPage.dart';
-
-import 'file:///C:/Users/Joe/AndroidStudioProjects/AstonHack2021/lib/models/ListingRecord.dart';
 
 //Divider - > Container(height: 100, child: Divider(color: Colors.black))
 
