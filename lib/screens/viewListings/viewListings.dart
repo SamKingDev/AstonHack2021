@@ -142,8 +142,7 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                            image: NetworkImage(
-                                "https://www.accommodationengine.co.uk/imagecache/750/450/storage/galleries/bC3fWJ/Student_Accommodation_Birmingham_Bentley_House_1.jpg"),
+                            image: NetworkImage(listingRecord.photoURLs.first),
                             fit: BoxFit.fill),
                       ),
                     ),
@@ -167,8 +166,7 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
                         ),
                         Row(
                           children: [
-                            Tag("${listingRecord.totalRooms} Bedroom House",
-                                Colors.blue),
+                            Tag(listingRecord.genderPreference.toString().split(".")[1].replaceAll("NoPreference", "No Preference"), Colors.red),
                             Tag("${listingRecord.freeRooms} Free Rooms",
                                 Colors.blue),
                           ],
