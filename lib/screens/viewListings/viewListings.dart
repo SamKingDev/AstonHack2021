@@ -74,6 +74,7 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: new Color.fromRGBO(69, 93, 122, 1),
         title: Text('Search Results'),
         centerTitle: true,
       ),
