@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:uni_roomie/screens/helpers.dart';
 import 'package:uni_roomie/screens/profile/ViewOtherProfilePage.dart';
 
 import '../../models/ChatRecord.dart';
@@ -137,11 +138,7 @@ class _ViewChatPageState extends State<ViewChatPage> {
                       return;
                     }
 
-                    User currentUser = FirebaseAuth.instance.currentUser;
-
-                    DocumentReference userReference = FirebaseFirestore.instance
-                        .collection("users")
-                        .doc(currentUser.uid);
+                    DocumentReference userReference = getUserReference();
 
                     chatRecord.reference.collection("messages").add({
                       "content": message,
