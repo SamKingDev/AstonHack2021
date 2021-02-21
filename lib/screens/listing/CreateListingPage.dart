@@ -390,7 +390,7 @@ class _ImagesState extends State<Images> {
       imgs.add(Container(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Image(image: AssetImage(img.path)),
+          child: Image.file(img),
         ),
         height: 300,
       ));
