@@ -46,12 +46,12 @@ class ViewListingsPage extends StatefulWidget {
 
   ViewListingsPage(
       {Key key,
-      this.minPrice,
-      this.maxPrice,
-      this.minDistance,
-      this.maxDistance,
-      this.roomsAvailable,
-      this.totalRooms})
+        this.minPrice,
+        this.maxPrice,
+        this.minDistance,
+        this.maxDistance,
+        this.roomsAvailable,
+        this.totalRooms})
       : super(key: key);
 
   @override
@@ -81,36 +81,41 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
     );
   }
 
+  List<QueryDocumentSnapshot> filter(String title) {}
+
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection("listings")
           .where("pricePerWeek", isGreaterThanOrEqualTo: minPrice)
           .where("pricePerWeek", isLessThanOrEqualTo: maxPrice)
-          .where("freeRooms", isEqualTo: roomsAvailable)
-          .where("totalRooms", isEqualTo: totalRooms)
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
 
-        return _buildList(context, snapshot.data.docs);
+        List<Listing> listings =
+        snapshot.data.docs.map((e) => Listing.fromSnapshot(e)).toList();
+
+        listings = listings
+            .where((e) =>
+        e.totalRooms <= totalRooms && e.freeRooms <= roomsAvailable)
+            .toList();
+
+        return _buildList(context, listings);
       },
     );
   }
 
-  Widget _buildList(
-      BuildContext context, List<QueryDocumentSnapshot> documents) {
+  Widget _buildList(BuildContext context, List<Listing> listings) {
     return ListView(
       padding: const EdgeInsets.only(top: 20.0),
-      children: documents
+      children: listings
           .map<Widget>((data) => _buildListItem(context, data))
           .toList(),
     );
   }
 
-  Widget _buildListItem(BuildContext context, QueryDocumentSnapshot data) {
-    final listingRecord = Listing.fromSnapshot(data);
-
+  Widget _buildListItem(BuildContext context, Listing listingRecord) {
     return Padding(
         padding: const EdgeInsets.all(5.0),
         child: InkWell(
@@ -119,7 +124,7 @@ class _ViewListingsPageState extends State<ViewListingsPage> {
             {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SingleListingPage()),
+                MaterialPageRoute(builder: (context) => SingleListingPage(listingRecord)),
               );
             }
           },
